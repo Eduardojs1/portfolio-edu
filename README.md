@@ -6,9 +6,9 @@ Portfólio em forma de computador. Quem entra vê a minha mesa em 3D (luminária
 
 Os programas abertos:
 
-- **IntelliJ IDEA**: o portfólio é um projeto Spring Boot de verdade (`dev.eduardo.portfolio`). O README abre primeiro; o ▶ verde (ou `Shift+F10`) "sobe" o app, mostra o log do Spring e abre o site em `localhost:8080` no preview. Tem janela Project, Maven, Git (com os commits reais deste repositório), Terminal, Search Everywhere (`Shift` duas vezes), menus e por aí vai.
+- **IntelliJ IDEA**: o portfólio é um projeto Spring Boot de verdade (`dev.eduardo.portfolio`). Ao entrar, o README fica na frente ("Para me conhecer, escolha abaixo") e o projeto já sobe sozinho por trás: o log do Spring passa no Run e o site fica pronto na aba `localhost:8080`, sem precisar clicar em nada. O ▶ verde (ou `Shift+F10`) religa e traz o site para a frente. Tem janela Project, Maven, Git (com os commits reais deste repositório), Terminal, Search Everywhere (`Shift` duas vezes), menus e por aí vai. Na engrenagem, **Theme** troca entre Dark, Light e Light with Light Header (o DataGrip acompanha e a escolha fica salva).
 - **DataGrip**: o banco `portfolio` com as tabelas `projetos`, `tecnologias`, `formacao` e `contato`. O console aceita `SELECT` (com `WHERE`, `ORDER BY` e `LIMIT`).
-- **Spotify**: uma playlist de lo-fi que é gerada no navegador (Web Audio), sem arquivo de áudio.
+- **Spotify**: abre na playlist "This Is Tarcísio do Acordeon", tocando pelo player oficial do Spotify (sem login toca prévia de 30 s; logado, a música inteira). Em "Músicas pra codar" tem um lo-fi gerado no navegador (Web Audio), sem arquivo de áudio.
 - **Navegador**: o portfólio como um site comum, sem IDE no caminho.
 
 O menu Iniciar tem atalhos para GitHub, LinkedIn, WhatsApp e e-mail. "Desligar" volta para a mesa.
@@ -34,14 +34,15 @@ Os dados ficam em `src/dados/`. O código Java do IntelliJ, as tabelas do DataGr
 | `sobre.ts` | o texto e a lista "O que eu faço". |
 | `projetos.ts` | os projetos. Cada um tem `imagem` (print em `public/img/`) ou `preview`. |
 | `stack.ts` | as tecnologias por área e o que está em estudo. |
-| `musicas.ts` | as músicas do Spotify (nome, artista, andamento e acordes). |
+| `musicas.ts` | as músicas do Spotify (nome, artista, andamento e acordes) e as playlists do Spotify de verdade (`playlistsSpotify`: é só colar o link de compartilhar). |
 
 Outros pontos:
 
 - **O projeto do IntelliJ** (árvore e conteúdo dos arquivos): `src/apps/intellij/projeto.ts`.
 - **A mesa em 3D**: `src/intro/cena.ts` (objetos, luzes e caminho da câmera) e `src/intro/texturas.ts` (madeira, mousepad, teclas, caneca…).
 - **O bilhete** (LEIA-ME.txt): `src/apps/bloco/Bloco.tsx`. **O tour**: `src/sistema/Guia.tsx`, com os textos de cada passo em `src/sistema/Desktop.tsx`.
-- **A tela do monitor na mesa** é uma imagem: `public/img/tela.webp`. Se mudar o visual do desktop, tire um print de `http://localhost:5173/#intellij` em 1920×1080 e salve por cima.
+- **A tela do monitor na mesa** é uma imagem: `public/img/tela.webp`. Se mudar o visual do desktop, tire um print de `http://localhost:5173/#intellij` em 1920×1080 (espere uns 5 segundos, até o projeto terminar de subir) e salve por cima.
+- **Tema Light**: `src/estilos/intellij-claro.css` (vale para IntelliJ e DataGrip) e `src/apps/intellij/tema.ts`.
 - **Foto**: `public/img/eduardo.webp` (README, site e retrato em partículas).
 
 ## Links diretos
@@ -51,7 +52,8 @@ Outros pontos:
 | `/#portfolio` | o site direto no navegador (bom para mandar para recrutador) |
 | `/#tour` | o desktop já com o tour guiado |
 | `/#desktop` | o desktop, sem a intro |
-| `/#site` | o IntelliJ já rodando o site |
+| `/#intellij` | o IntelliJ (README na frente, projeto já rodando) |
+| `/#site` | o IntelliJ já mostrando o site |
 | `/#datagrip` | o DataGrip |
 | `/#spotify` | o Spotify |
 | `/#abrir=src/main/java/dev/eduardo/portfolio/service/ProjetoService.java` | um arquivo no IntelliJ |
