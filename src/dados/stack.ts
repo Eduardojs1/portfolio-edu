@@ -1,7 +1,11 @@
+// Aparece em Stack.java como um enum: cada grupo vira uma constante
 export const stack: { grupo: string; itens: string[] }[] = [
-  { grupo: "frontend", itens: ["TypeScript", "React", "Next.js", "Vue 3", "Tailwind", "Three.js", "GSAP"] },
-  { grupo: "backend", itens: ["Java 21", "Spring Boot", "Java EE", "Node.js", "Fastify"] },
-  { grupo: "banco_de_dados", itens: ["PostgreSQL", "Prisma", "Drizzle", "Flyway"] },
-  { grupo: "bots_e_desktop", itens: ["discord.js", "Electron", "OAuth2"] },
-  { grupo: "infra", itens: ["Docker", "Vercel", "Cloudflare Pages", "Render"] },
+  { grupo: "BACKEND", itens: ["Java", "Groovy", "Grails", "Python", "Node.js"] },
+  { grupo: "FRONTEND", itens: ["HTML", "CSS", "JavaScript", "TypeScript", "Tailwind", "JSF", "JSP"] },
+  { grupo: "BANCO_DE_DADOS", itens: ["PostgreSQL", "MySQL"] },
+  { grupo: "DEVOPS", itens: ["Git", "Docker", "Linux"] },
+  { grupo: "FERRAMENTAS", itens: ["IntelliJ", "VS Code", "DBeaver", "Postman", "Figma"] },
 ];
+
+// O que ainda está em aprendizado (vira um comentário no fim do enum)
+export const estudando = ["JavaScript", "TypeScript", "Tailwind", "Node.js"];

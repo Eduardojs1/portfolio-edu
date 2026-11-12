@@ -1,7 +1,7 @@
 export type Projeto = {
   id: string;
   nome: string;
-  variavel: string; // nome em camelCase, usado na linha de código de projetos.js
+  variavel: string; // nome em camelCase (não aparece na tela hoje)
   rotulo: string; // linha curta acima do nome, ex.: "Site · 3D · Animação"
   resumo: string;
   fiz: string; // "O que eu fiz"

@@ -10,6 +10,23 @@ export const perfil = {
 
   papeis: ["Full Stack", "Java & Spring", "React & Next", "Bots & Desktop"],
 
+  // Frases que vão sendo digitadas no início, depois de "construindo"
+  construindo: [
+    "sites com 3D e animação",
+    "APIs em Java e Spring Boot",
+    "sistemas web com painel e pagamento",
+    "bots de Discord que cobram no Pix",
+    "apps desktop em Electron",
+  ],
+  intro:
+    "Faço front, back, bot de Discord e app desktop. Quando um produto digital precisa de tudo isso conversando, eu construo o caminho inteiro.",
+  disponivel: true, // card "Disponível para novos projetos" no início
+
+  formacao: [
+    { curso: "Sistemas de Informação", onde: "UFRA · Universidade Federal Rural da Amazônia" },
+    { curso: "Inglês do básico ao avançado", onde: "Aslan Idiomas" },
+  ],
+
   email: "seuemail@exemplo.com",
   whatsapp: { exibir: "(00) 00000-0000", numero: "5500000000000" },
   github: "seu-usuario",
