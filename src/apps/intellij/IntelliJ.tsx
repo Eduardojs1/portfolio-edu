@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSistema, type AppId, type ControleJanela } from "../../sistema/contexto";
-import { definirSinal, emitir, lerSinal, ouvir, ouvirSinal } from "../../sistema/eventos";
+import { definirSinal, emitir, lerSinal, ouvir } from "../../sistema/eventos";
 import { IconeIntelliJ } from "../../sistema/icones";
 import { projetos } from "../../dados/projetos";
 import { perfil } from "../../dados/perfil";
@@ -13,6 +13,7 @@ import { Terminal } from "./Terminal";
 import { BuscaTudo, type AbaBusca, type Acao } from "./BuscaTudo";
 import { MenuSuspenso, type ItemMenu } from "./Menus";
 import { fimProcesso, logApp, logMaven, type Sessao } from "./execucao";
+import { classeTema, mudarTemaIde, temasIde, useTemaIde } from "./tema";
 import {
   JanelaBanco,
   JanelaCommit,
@@ -32,7 +33,6 @@ import {
   IcBanco,
   IcBusca,
   IcChevron,
-  IcColab,
   IcCommit,
   IcDepurar,
   IcEndpoints,
@@ -45,7 +45,6 @@ import {
   IcFechar,
   IcFecharJanela,
   IcGit,
-  IcIA,
   IcLocalizar,
   IcMais,
   IcMaisFerramentas,
@@ -89,6 +88,7 @@ const hora = () => new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", min
 export function IntelliJ({ janela }: { janela: ControleJanela }) {
   const sistema = useSistema();
   const celular = sistema.celular;
+  const tema = useTemaIde();
 
   // ---------------- Abas do editor ----------------
   const [abas, setAbas] = useState<string[]>([ID.app, ID.readme]);
@@ -103,7 +103,8 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
 
   // ---------------- Janelas de ferramenta ----------------
   const [esquerda, setEsquerda] = useState<Esquerda | null>(celular ? null : "projeto");
-  const [direita, setDireita] = useState<Direita | null>(!celular && innerWidth >= 1500 ? "maven" : null);
+  // Maven começa fechado: o site rodando ganha a largura toda (o "m" na direita abre)
+  const [direita, setDireita] = useState<Direita | null>(null);
   const [inferior, setInferior] = useState<Inferior | null>(null);
   const [tam, setTam] = useState({ esq: 300, dir: 290, inf: 270 });
 
@@ -174,7 +175,15 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
     setInferior("run");
   }, []);
 
-  const rodar = useCallback((debug = false) => novaSessao(debug ? "debug" : "app", "PortfolioApplication", logApp(debug)), [novaSessao]);
+  // Rodar "na mão" (▶, menu, atalho, terminal…) traz o site para a frente quando ele subir
+  const querSite = useRef(false);
+  const rodar = useCallback(
+    (debug = false) => {
+      querSite.current = true;
+      novaSessao(debug ? "debug" : "app", "PortfolioApplication", logApp(debug));
+    },
+    [novaSessao]
+  );
   const maven = useCallback((objetivo: string) => novaSessao("maven", `portfolio [${objetivo}]`, logMaven(objetivo)), [novaSessao]);
   const parar = useCallback((id?: number) => {
     setSessoes((l) =>
@@ -207,20 +216,24 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
     return () => window.clearTimeout(t);
   }, [sessoes]);
 
-  // O app subiu: abre o site no preview
+  // O app subiu. Se foi pedido (▶, "Abrir o site"…), o site vem para a frente; se subiu
+  // sozinho ao abrir, a aba localhost:8080 fica pronta e o README continua na frente.
   const estavaRodando = useRef(false);
   const [jaRodou, setJaRodou] = useState(false);
   useEffect(() => {
     definirSinal("app-rodando", appRodando);
     if (appRodando && !estavaRodando.current) {
       setJaRodou(true);
-      abrirSite(ancoraPendente.current ?? undefined);
-      if (celular) setInferior(null); // no celular o Run cobriria o site
+      if (querSite.current) {
+        abrirSite(ancoraPendente.current ?? undefined);
+        if (!lerSinal("guia-aberto"))
+          notificar("Projeto ligado! 🎉", "O site abriu aqui no meio. Role para ver projetos, tecnologias e contato.", [
+            { rotulo: "Abrir o site", acao: () => abrirSite() },
+          ]);
+      } else setAbas((l) => (l.includes(SITE) ? l : [...l, SITE]));
+      if (celular) setInferior(null); // no celular o Run cobriria a tela
       ancoraPendente.current = null;
-      if (!lerSinal("guia-aberto"))
-        notificar("Projeto ligado! 🎉", "O site abriu aqui no meio. Role para ver projetos, tecnologias e contato.", [
-          { rotulo: "Abrir o site", acao: () => abrirSite() },
-        ]);
+      querSite.current = false;
     }
     estavaRodando.current = appRodando;
   }, [appRodando, abrirSite, notificar, celular]);
@@ -256,39 +269,22 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
   useEffect(() => ouvir("intellij:rodar", () => rodar()), [rodar]);
   useEffect(() => ouvir("intellij:site", (ancora) => verSite(ancora || undefined)), [verSite]);
 
-  // Endereço com #abrir=caminho/do/Arquivo.java: abre o arquivo
+  // Ao abrir, o projeto já sobe sozinho, sem tirar o README da frente: ele é a página
+  // inicial ("para me conhecer, escolha abaixo") e o site fica pronto na aba localhost:8080.
+  // O ▶ continua lá para religar. Com #abrir=Arquivo.java, abre esse arquivo.
+  const ligou = useRef(false);
   useEffect(() => {
+    if (ligou.current) return;
+    ligou.current = true;
     const m = /^#abrir=(.+)$/.exec(decodeURIComponent(location.hash));
     if (m) abrirArquivo(m[1]);
+    novaSessao("app", "PortfolioApplication", logApp(false));
   }, []);
 
-  // Ao abrir: "indexando" e, quando a pessoa já estiver no computador (e sem o guia
-  // na frente), um balão explicando o ▶
-  const avisouRodar = useRef(false);
+  // "Indexando" nos primeiros segundos, como o de verdade
   useEffect(() => {
-    const t1 = window.setTimeout(() => setIndexando(false), 2600);
-    let t2: number | undefined;
-    const tentar = () => {
-      window.clearTimeout(t2);
-      if (avisouRodar.current || !lerSinal("desktop-ativo") || lerSinal("guia-aberto") || lerSinal("app-rodando")) return;
-      t2 = window.setTimeout(() => {
-        if (avisouRodar.current || lerSinal("guia-aberto") || lerSinal("app-rodando")) return;
-        avisouRodar.current = true;
-        notificar("Quer ver o site?", "Clique no ▶ verde aqui em cima: o projeto liga e o site abre aqui dentro.", [
-          { rotulo: "▶ Ligar o projeto", acao: () => rodar() },
-          { rotulo: "Ler o LEIA-ME", acao: () => emitir("sistema:guia") },
-        ]);
-      }, 1400);
-    };
-    tentar();
-    const a = ouvirSinal("desktop-ativo", tentar);
-    const b = ouvirSinal("guia-aberto", tentar);
-    return () => {
-      a();
-      b();
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
+    const t = window.setTimeout(() => setIndexando(false), 2600);
+    return () => window.clearTimeout(t);
   }, []);
 
   // O terminal fica vivo depois de aberto, para não perder o histórico
@@ -519,7 +515,7 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
       { rotulo: "Settings…", atalho: "Ctrl+Alt+S", desabilitado: true },
       { rotulo: "Plugins…", desabilitado: true },
       { separador: true },
-      { rotulo: "Theme", sub: [{ rotulo: "Dark", marcado: true }, { rotulo: "Light", desabilitado: true }] },
+      { rotulo: "Theme", sub: temasIde.map((t) => ({ rotulo: t.nome, marcado: tema === t.id, acao: () => mudarTemaIde(t.id) })) },
       { rotulo: "Keymap", sub: [{ rotulo: "Windows", marcado: true }] },
       { separador: true },
       { rotulo: "About", acao: () => setSobre(true) },
@@ -563,7 +559,7 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
   const tituloInf: Record<Inferior, string> = { run: "Run", terminal: "Terminal", problemas: "Problems", git: "Git", servicos: "Services" };
 
   return (
-    <div className={`ij${celular ? " celular" : ""}${focada ? " focada" : ""}`} ref={raiz} data-guia="intellij">
+    <div className={`ij${classeTema(tema)}${celular ? " celular" : ""}${focada ? " focada" : ""}`} ref={raiz} data-guia="intellij">
       {/* ================= Barra principal ================= */}
       <header className="ij-topo" data-arrastar>
         <span className="ij-logo" aria-hidden="true">
@@ -632,17 +628,7 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
             <IcMais />
           </button>
         )}
-        {!celular && (
-          <>
-            <span className="ij-sep" />
-            <button className="ij-tb" title="AI Assistant" aria-label="AI Assistant" onClick={() => notificar("AI Assistant", "Pergunte direto ao Eduardo: o contato está no README. 😉", [{ rotulo: "Abrir README", acao: () => abrirArquivo(ID.readme) }])}>
-              <IcIA />
-            </button>
-            <button className="ij-tb" title="Code With Me" aria-label="Code With Me" onClick={() => notificar("Code With Me", "Bora codar junto? Me chama no contato.", [{ rotulo: "Ver contato", acao: () => verSite("contato") }])}>
-              <IcColab />
-            </button>
-          </>
-        )}
+        {!celular && <span className="ij-sep" />}
         <button className="ij-tb" onClick={() => setBusca("tudo")} title="Search Everywhere (Double Shift)" aria-label="Search Everywhere">
           <IcBusca />
         </button>

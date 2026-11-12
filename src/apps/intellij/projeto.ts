@@ -666,12 +666,12 @@ ${textoSobre}
 
 ## Por onde começar
 
-Não precisa entender de programação: é só clicar nos links azuis. 😉
+Para me conhecer, escolha abaixo:
 
 | Quero... | Clique em |
 | --- | --- |
+| Ver meus projetos, quem eu sou e como falar comigo | [Abrir o site](site) |
 | Ver o portfólio como um site comum | [Abrir no navegador](app:navegador) |
-| Ver o site rodando aqui no programa | [▶ Ligar o projeto](acao:rodar) (o mesmo que o ▶ verde lá em cima) |
 | Conhecer cada programa com calma | [Fazer o tour guiado](acao:guia) |
 | Falar comigo | [Contato](site:contato) |
 | Ver os projetos em código | [ProjetoService.java](abrir:${ID.servico}) |

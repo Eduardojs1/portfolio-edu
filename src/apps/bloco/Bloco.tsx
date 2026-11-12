@@ -73,8 +73,8 @@ export function Bloco({ janela }: { janela: ControleJanela }) {
           (uns 2 minutinhos)
         </p>
         <p>
-          é de TI? então fica à vontade. o portfólio é um projeto spring boot de verdade aberto no intellij: aperta o ▶ verde lá em cima que
-          ele sobe.
+          é de TI? então fica à vontade. o portfólio é um projeto spring boot de verdade aberto no intellij, e já deixei ele rodando: o site
+          tá na aba localhost:8080. dá pra fuçar nos arquivos, no banco (datagrip) e no terminal.
         </p>
         <p>
           pra falar comigo:

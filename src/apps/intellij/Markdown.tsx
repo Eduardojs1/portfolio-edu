@@ -1,8 +1,8 @@
 import { Fragment, type ReactNode } from "react";
 
 // Preview de Markdown (o suficiente para o README): títulos, parágrafos, listas,
-// tabelas, imagens, citação, código e links. Links com "acao:", "abrir:", "app:" e
-// "site:" chamam onLink em vez de navegar.
+// tabelas, imagens, citação, código e links. Links com "acao:", "abrir:", "app:",
+// "site:" (ou só "site") chamam onLink em vez de navegar.
 type Props = { texto: string; onLink: (destino: string) => void };
 
 function inline(texto: string, onLink: Props["onLink"], chave = ""): ReactNode[] {
@@ -17,7 +17,7 @@ function inline(texto: string, onLink: Props["onLink"], chave = ""): ReactNode[]
     const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(p);
     if (link) {
       const [, rotulo, destino] = link;
-      const interno = /^(acao|abrir|app|site):/.test(destino);
+      const interno = /^(acao|abrir|app|site)(:|$)/.test(destino);
       return interno ? (
         <a
           key={k}

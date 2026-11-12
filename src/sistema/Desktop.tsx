@@ -141,6 +141,14 @@ export function Desktop({ ativo, onDesligar }: Props) {
         texto: "esses são os programas que eu uso todo dia. vou te mostrar um por um.",
       },
       {
+        alvo: '[data-guia="site"]',
+        antes: () => {
+          abrir("intellij");
+          emitir("intellij:site");
+        },
+        texto: "esse é o meu portfólio, já rodando dentro do intellij. rola a página pra ver os projetos e o contato.",
+      },
+      {
         alvo: '[data-guia="arvore"]',
         antes: () => abrir("intellij"),
         texto: "intellij: é onde eu programo. aqui do lado ficam os arquivos do portfólio, que é um projeto java de verdade.",
@@ -148,17 +156,8 @@ export function Desktop({ ativo, onDesligar }: Props) {
       {
         alvo: '[data-guia="rodar"]',
         antes: () => abrir("intellij"),
-        texto: "pra ver o site, liga o projeto: clica nesse ▶ verde.",
-        acao: { rotulo: "liga pra mim", fazer: () => emitir("intellij:rodar") },
-        esperar: "app-rodando",
-      },
-      {
-        alvo: '[data-guia="site"]',
-        antes: () => {
-          abrir("intellij");
-          emitir("intellij:site");
-        },
-        texto: "pronto, esse é o site rodando. rola a página pra ver os projetos e o contato.",
+        texto: "esse ▶ verde liga o projeto. já deixei ligado pra você, mas dá pra ver ele subindo de novo.",
+        acao: { rotulo: "religar", fazer: () => emitir("intellij:rodar") },
       },
       {
         alvo: '.bt-app[aria-label="DataGrip"]',
@@ -167,9 +166,9 @@ export function Desktop({ ativo, onDesligar }: Props) {
       },
       {
         alvo: '.bt-app[aria-label="Spotify"]',
-        texto: "spotify: o que eu ouço programando. dá o play, a música é gerada na hora.",
+        texto: "spotify: o que eu ouço programando. tem tarcísio do acordeon e um lo-fi que é gerado na hora.",
         acao: {
-          rotulo: "tocar",
+          rotulo: "tocar o lo-fi",
           fazer: () => {
             abrir("spotify");
             emitir("spotify:tocar");
