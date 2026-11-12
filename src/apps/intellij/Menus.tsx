@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 export type ItemMenu =
   | { separador: true }
@@ -49,6 +49,23 @@ export function MenuSuspenso({ itens, pos, onFechar, largura, titulo }: Props) {
   );
 }
 
+// Submenu abre para a direita; se não couber na janela, abre para a esquerda
+function Submenu({ itens, onFechar }: { itens: ItemMenu[]; onFechar: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [esquerda, setEsquerda] = useState(false);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const limite = el.closest(".ij")?.getBoundingClientRect().right ?? innerWidth;
+    if (el.getBoundingClientRect().right > limite - 4) setEsquerda(true);
+  }, []);
+  return (
+    <div ref={ref} className={`ij-menu ij-submenu${esquerda ? " esquerda" : ""}`} role="menu">
+      <Lista itens={itens} onFechar={onFechar} />
+    </div>
+  );
+}
+
 function Lista({ itens, onFechar }: { itens: ItemMenu[]; onFechar: () => void }) {
   const [aberto, setAberto] = useState<number | null>(null);
   return (
@@ -76,11 +93,7 @@ function Lista({ itens, onFechar }: { itens: ItemMenu[]; onFechar: () => void })
               {it.atalho && <span className="ij-menu-atalho">{it.atalho}</span>}
               {it.sub && <span className="ij-menu-seta">›</span>}
             </button>
-            {it.sub && aberto === i && (
-              <div className="ij-menu ij-submenu" role="menu">
-                <Lista itens={it.sub} onFechar={onFechar} />
-              </div>
-            )}
+            {it.sub && aberto === i && <Submenu itens={it.sub} onFechar={onFechar} />}
           </div>
         );
       })}

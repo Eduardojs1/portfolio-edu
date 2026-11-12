@@ -6,6 +6,7 @@ import "./estilos/desktop.css";
 import "./estilos/intellij.css";
 import "./estilos/site.css";
 import "./estilos/datagrip.css";
+import "./estilos/intellij-claro.css";
 import "./estilos/spotify.css";
 import "./estilos/intro.css";
 import "./estilos/navegador.css";

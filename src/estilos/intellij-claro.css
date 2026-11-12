@@ -1,0 +1,170 @@
+/* ==========================================================================
+   Tema Light do IntelliJ e do DataGrip (Settings ▸ Theme ▸ Light)
+   Paleta do tema claro da interface nova e do esquema "IntelliJ Light" do editor.
+   O site que roda no preview continua com a cara dele (escuro).
+   ========================================================================== */
+.ij.claro {
+  --ij-fundo: #f7f8fa;
+  --ij-editor: #ffffff;
+  --ij-linha: #ebecf0;
+  --ij-borda: #ebecf0;
+  --ij-borda-2: #dfe1e5;
+  --ij-hover: #dfe1e5;
+  --ij-ativo: #d3d5db;
+  --ij-sel: #d4e2ff;
+  --ij-texto: #000000;
+  --ij-texto-2: #494b57;
+  --ij-texto-3: #818594;
+  --ij-icone: #6c707e;
+  --ij-azul: #3574f0;
+  --ij-link: #2f5fbd;
+  --ij-ico-cinza: #6c707e;
+  --ij-ico-verde: #369650;
+  --ij-ico-azul: #3574f0;
+  --ij-ico-inativo: #a8adbd;
+  color-scheme: light;
+}
+.ij.claro,
+.ij.claro * { scrollbar-color: #c9ccd6 transparent; }
+.ij.claro ::selection { background: #a6d2ff; }
+
+/* "Light": a barra de cima continua escura, como no IntelliJ de verdade */
+.ij.claro.cabecalho-escuro .ij-topo {
+  --ij-fundo: #27282e;
+  --ij-editor: #1e1f22;
+  --ij-linha: #27282e;
+  --ij-borda-2: #4a4c52;
+  --ij-hover: rgba(255, 255, 255, 0.1);
+  --ij-ativo: rgba(255, 255, 255, 0.15);
+  --ij-texto: #dfe1e5;
+  --ij-texto-3: #9a9da6;
+  --ij-icone: #ced0d6;
+  --ij-ico-cinza: #9da0a8;
+  --ij-ico-verde: #5fb865;
+  --ij-ico-azul: #548af7;
+  color: var(--ij-texto);
+}
+.ij.claro:not(.cabecalho-escuro) .ij-janela button:hover { background: rgba(0, 0, 0, 0.06); }
+.ij.claro:not(.cabecalho-escuro) .ij-janela button.fechar:hover { background: #c42b1c; }
+
+/* Faixas e árvore */
+.ij.claro .ij-faixa-btn.ativo { color: #27282e; }
+.ij.claro .ij-no:hover { background: rgba(0, 0, 0, 0.04); }
+.ij.claro .ij-no.sel { background: var(--ij-sel); }
+.ij.claro .ij-no.excluida,
+.ij.claro .ij-no.excluido { color: #9c6a1e; }
+.ij.claro .ij-no.excluida:not(.sel) { background: rgba(242, 197, 110, 0.3); }
+.ij.claro .ij-no-seta { color: #818594; }
+.ij.claro .ij-aba:hover { background: rgba(0, 0, 0, 0.03); }
+.ij.claro .ed-ferramentas { background: rgba(255, 255, 255, 0.92); }
+
+/* Editor (esquema IntelliJ Light) */
+.ij.claro .cod { color: #080808; }
+.ij.claro .cod-linha.atual,
+.ij.claro .cod-linha.atual .cod-gutter { background: #f5f8fe; }
+.ij.claro .cod-num { color: #aeb3c2; }
+.ij.claro .cod-linha.atual .cod-num { color: #767a8a; background: #f5f8fe; }
+.ij.claro .cod-guia { background-image: linear-gradient(#ebecf0, #ebecf0); }
+.ij.claro .cod-cursor { background: #000; }
+.ij.claro .t-kw,
+.ij.claro .t-chave,
+.ij.claro .t-tag,
+.ij.claro .t-md-titulo { color: #0033b3; }
+.ij.claro .t-str,
+.ij.claro .t-val { color: #067d17; }
+.ij.claro .t-num { color: #1750eb; }
+.ij.claro .t-com,
+.ij.claro .t-doc,
+.ij.claro .t-doc-tag { color: #8c8c8c; }
+.ij.claro .t-anot { color: #9e880d; }
+.ij.claro .t-met { color: #00627a; }
+.ij.claro .t-met-uso,
+.ij.claro .t-pont { color: #080808; }
+.ij.claro .t-campo,
+.ij.claro .t-const,
+.ij.claro .t-attr-th,
+.ij.claro .t-var { color: #871094; }
+.ij.claro .t-attr { color: #174ad4; }
+.ij.claro .t-md-link { color: #2f5fbd; }
+
+/* Markdown e imagem */
+.ij.claro .md code { background: #eff1f3; }
+.ij.claro .md .md-retrato { filter: invert(1) contrast(1.15); mix-blend-mode: multiply; }
+.ij.claro .img-area { background: conic-gradient(#ffffff 25%, #f0f1f3 0 50%, #ffffff 0 75%, #f0f1f3 0) 0 0 / 16px 16px; }
+.ij.claro .ij-vazio dt { color: #6c707e; }
+.ij.claro .ij-vazio dd { color: #000; }
+
+/* Preview do navegador: o site fica como é; as páginas do próprio navegador ficam claras */
+.ij.claro .nav-conteudo,
+.ij.claro .nav-conteudo * { scrollbar-color: #4d5057 transparent; }
+.ij.claro .nav-conteudo ::selection { background: #214283; }
+.ij.claro .nav-conteudo:has(.nav-erro),
+.ij.claro .nav-conteudo:has(.nav-json) { background: #fff; color-scheme: light; }
+.ij.claro .nav-erro,
+.ij.claro .nav-erro-icone,
+.ij.claro .nav-erro-dica,
+.ij.claro .nav-json label { color: #5f6368; }
+.ij.claro .nav-erro h1 { color: #202124; }
+.ij.claro .nav-erro-botao { background: #1a73e8; color: #fff; }
+.ij.claro .nav-json { background: #fff; color: #000; }
+
+/* Run, terminal e Git */
+.ij.claro .tw-console,
+.ij.claro .c-banner { color: #080808; }
+.ij.claro .c-data,
+.ij.claro .c-fraco,
+.ij.claro .c-cmd,
+.ij.claro .c-fim { color: #8c8c8c; }
+.ij.claro .c-info,
+.ij.claro .c-banner-2,
+.ij.claro .c-sucesso { color: #067d17; }
+.ij.claro .c-aviso { color: #a46704; }
+.ij.claro .c-pid { color: #871094; }
+.ij.claro .c-logger { color: #00627a; }
+.ij.claro .c-maven-plugin { color: #9e880d; }
+.ij.claro .term-linha,
+.ij.claro .term-prompt { color: #080808; }
+.ij.claro .term-erro { color: #db3b4b; }
+.ij.claro .term-dica { color: #8c8c8c; }
+.ij.claro .term-entrada input { color: #080808; caret-color: #000; }
+.ij.claro .tw-git-commit:hover { background: rgba(0, 0, 0, 0.03); }
+.ij.claro .tw-git-tag { background: rgba(214, 161, 75, 0.22); color: #8a5c12; }
+.ij.claro .tw-git-tag-2 { background: rgba(135, 16, 148, 0.1); color: #871094; }
+.ij.claro .tw-problemas-ok { color: #208a3c; }
+.ij.claro .tw-bolinha { background: #a8adbd; }
+.ij.claro .tw-bolinha.on { background: #369650; box-shadow: 0 0 6px rgba(54, 150, 80, 0.45); }
+.ij.claro .ij-status { color: #6c707e; }
+
+/* Menus, busca, balões e diálogos: brancos, com sombra mais leve */
+.ij.claro .ij-menu,
+.ij.claro .busca,
+.ij.claro .ij-balao,
+.ij.claro .ij-dialogo { background: #fff; border-color: #dfe1e5; }
+.ij.claro .ij-menu { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14); }
+.ij.claro .busca { box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18); }
+.ij.claro .ij-balao { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14); }
+.ij.claro .ij-dialogo { box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2); }
+.ij.claro .ij-dialogo-fundo { background: rgba(0, 0, 0, 0.18); }
+.ij.claro .ij-dialogo-fraco { color: #6c707e; }
+.ij.claro .ij-dialogo-botoes button { border-color: #c9ccd6; }
+.ij.claro .busca-campo { background: #fff; }
+.ij.claro.celular .ij-tw-esq { box-shadow: 8px 0 32px rgba(0, 0, 0, 0.18); }
+.ij.claro.celular .ij-fundo-gaveta { background: rgba(0, 0, 0, 0.2); }
+.ij.claro.celular .ij-tw-inf { box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.12); }
+
+/* DataGrip */
+.ij.claro .dg-numeros { color: #aeb3c2; }
+.ij.claro .dg-realce { color: #080808; }
+.ij.claro .dg-area textarea { caret-color: #000; }
+.ij.claro .dg-area textarea::selection { background: rgba(166, 210, 255, 0.85); }
+.ij.claro .dg-saida-ok { color: #208a3c; }
+.ij.claro .dg-saida-erro { color: #db3b4b; }
+.ij.claro .dg-grade th,
+.ij.claro .dg-grade td { border-color: #ebecf0; }
+.ij.claro .dg-grade td { color: #080808; }
+.ij.claro .dg-grade .dg-n { color: #818594; }
+.ij.claro .dg-grade tr:hover td:not(.dg-n) { background: rgba(0, 0, 0, 0.025); }
+.ij.claro .dg-grade tr.linha-sel td:not(.dg-n) { background: #edf3ff; }
+.ij.claro .dg-null { color: #8c8c8c !important; }
+.ij.claro .dg-numero { color: #1750eb !important; }
+.ij.claro .dg-bool { color: #0033b3 !important; }

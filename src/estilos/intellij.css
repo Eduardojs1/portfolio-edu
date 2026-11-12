@@ -644,6 +644,7 @@
 .ij-menu-seta { margin-left: 16px; color: var(--ij-texto-3); font-size: 15px; }
 .ij-menu-sep { height: 1px; margin: 4px 8px; background: var(--ij-borda-2); }
 .ij-submenu { top: -6px; left: 100%; margin-left: 2px; }
+.ij-submenu.esquerda { left: auto; right: 100%; margin: 0 2px 0 0; }
 
 .busca-fundo { position: absolute; inset: 0; z-index: 60; display: flex; justify-content: center; align-items: flex-start; padding: 76px 12px 12px; }
 .busca {

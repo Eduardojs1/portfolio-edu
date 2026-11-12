@@ -28,9 +28,9 @@ export const IcRamo = ({ tamanho = 16 }: P) =>
       <path d="M4.5 5v6M11.5 6.5c0 3-4 2.5-6.6 4.9" />
     </>
   );
-export const IcAtualizar = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M12.5 3.5l-9 9M3.5 6.5v6h6" />, { ...traco, stroke: "#548af7" });
-export const IcEnviar = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M3.5 12.5l9-9M6.5 3.5h6v6" />, { ...traco, stroke: "#5fb865" });
-export const IcExecutar = ({ tamanho = 16, cor = "#5fb865" }: P & { cor?: string }) =>
+export const IcAtualizar = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M12.5 3.5l-9 9M3.5 6.5v6h6" />, { ...traco, stroke: "var(--ij-ico-azul, #548af7)" });
+export const IcEnviar = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M3.5 12.5l9-9M6.5 3.5h6v6" />, { ...traco, stroke: "var(--ij-ico-verde, #5fb865)" });
+export const IcExecutar = ({ tamanho = 16, cor = "var(--ij-ico-verde, #5fb865)" }: P & { cor?: string }) =>
   svg(tamanho, <path d="M4.5 2.8v10.4a.5.5 0 0 0 .76.43l8.3-5.2a.5.5 0 0 0 0-.86l-8.3-5.2a.5.5 0 0 0-.76.43z" />, { fill: cor });
 export const IcDepurar = ({ tamanho = 16 }: P) =>
   svg(
@@ -39,7 +39,7 @@ export const IcDepurar = ({ tamanho = 16 }: P) =>
       <path d="M5.2 6.2h5.6v4.3a2.8 2.8 0 0 1-5.6 0z" />
       <path d="M6 6.2a2 2 0 0 1 4 0M8 6.6v6.6M2.5 9h2.7M10.8 9h2.7M3 5.3l2.2 1.4M13 5.3l-2.2 1.4M3 13l2.4-1.3M13 13l-2.4-1.3" />
     </>,
-    { ...traco, stroke: "#5fb865" }
+    { ...traco, stroke: "var(--ij-ico-verde, #5fb865)" }
   );
 export const IcMais = ({ tamanho = 16 }: P) =>
   svg(
@@ -85,7 +85,7 @@ export const IcEngrenagem = ({ tamanho = 16 }: P) =>
     </>
   );
 export const IcParar = ({ tamanho = 16, ativo = true }: P & { ativo?: boolean }) =>
-  svg(tamanho, <rect x="3.5" y="3.5" width="9" height="9" rx="1.5" />, { fill: ativo ? "#db5c5c" : "#5a5d63" });
+  svg(tamanho, <rect x="3.5" y="3.5" width="9" height="9" rx="1.5" />, { fill: ativo ? "#db5c5c" : "var(--ij-ico-inativo, #5a5d63)" });
 export const IcReexecutar = ({ tamanho = 16 }: P) =>
   svg(
     tamanho,
@@ -93,13 +93,13 @@ export const IcReexecutar = ({ tamanho = 16 }: P) =>
       <path d="M13 8a5 5 0 1 1-1.5-3.6" />
       <path d="M12 1.8v2.8H9.2" />
     </>,
-    { ...traco, stroke: "#5fb865" }
+    { ...traco, stroke: "var(--ij-ico-verde, #5fb865)" }
   );
 export const IcSpringBoot = ({ tamanho = 16 }: P) =>
   svg(
     tamanho,
     <>
-      <path d="M13.6 2.4c-6.6-.5-11 3.4-10.3 9 .2 1.4 1 2.2 2.3 2.2 5.6 0 8.6-5 8-11.2z" fill="#5fb865" stroke="none" />
+      <path d="M13.6 2.4c-6.6-.5-11 3.4-10.3 9 .2 1.4 1 2.2 2.3 2.2 5.6 0 8.6-5 8-11.2z" fill="var(--ij-ico-verde, #5fb865)" stroke="none" />
       <path d="M4.3 12.9c1.6-3.4 4-5.8 7.2-7.6" stroke="#2b2d30" strokeWidth="1.2" />
     </>,
     { fill: "none", strokeLinecap: "round" }
@@ -236,18 +236,18 @@ export const IcExpandir = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M4.5 6l
 export const IcRecolher = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M4.5 3l3.5 3 3.5-3M4.5 13l3.5-3 3.5 3" />);
 export const IcOcultar = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M3.5 8h9" />);
 export const IcFechar = ({ tamanho = 12 }: P) => svg(tamanho, <path d="M4 4l8 8M12 4l-8 8" />);
-export const IcCheck = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M3.5 8.5l3 3 6-7" />, { ...traco, stroke: "#5fb865", strokeWidth: 1.6 });
+export const IcCheck = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M3.5 8.5l3 3 6-7" />, { ...traco, stroke: "var(--ij-ico-verde, #5fb865)", strokeWidth: 1.6 });
 
 // Pastas
 type PapelPasta = "comum" | "fonte" | "recursos" | "teste" | "excluida" | "pacote" | "modulo";
 const corPasta: Record<PapelPasta, string> = {
-  comum: "#9da0a8",
-  fonte: "#548af7",
+  comum: "var(--ij-ico-cinza, #9da0a8)",
+  fonte: "var(--ij-ico-azul, #548af7)",
   recursos: "#c99e5b",
-  teste: "#5fb865",
+  teste: "var(--ij-ico-verde, #5fb865)",
   excluida: "#e08855",
-  pacote: "#9da0a8",
-  modulo: "#9da0a8",
+  pacote: "var(--ij-ico-cinza, #9da0a8)",
+  modulo: "var(--ij-ico-cinza, #9da0a8)",
 };
 export const IcPasta = ({ tamanho = 16, papel = "comum" }: P & { papel?: PapelPasta }) => {
   const cor = corPasta[papel];
@@ -257,11 +257,12 @@ export const IcPasta = ({ tamanho = 16, papel = "comum" }: P & { papel?: PapelPa
       <path
         d="M1.5 4a1 1 0 0 1 1-1h3.6l1.5 1.5h5.9a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z"
         stroke={cor}
-        fill={papel === "fonte" || papel === "teste" ? `${cor}33` : "none"}
+        fill={papel === "fonte" || papel === "teste" ? cor : "none"}
+        fillOpacity={0.2}
       />
       {papel === "pacote" && <circle cx="8" cy="9" r="1.5" fill={cor} stroke="none" />}
       {papel === "recursos" && <path d="M5 8.5h6M5 10.5h4" stroke={cor} />}
-      {papel === "modulo" && <rect x="10" y="8.5" width="3" height="3" rx=".5" fill="#548af7" stroke="none" />}
+      {papel === "modulo" && <rect x="10" y="8.5" width="3" height="3" rx=".5" fill="var(--ij-ico-azul, #548af7)" stroke="none" />}
     </>,
     { ...traco, strokeWidth: 1.1 }
   );
@@ -274,7 +275,7 @@ export const IcBibliotecas = ({ tamanho = 16 }: P) =>
       <rect x="6.2" y="3" width="3" height="10" rx=".6" />
       <path d="M10.6 3.6l2.8-.8 2 9.6-2.8.8z" />
     </>,
-    { ...traco, stroke: "#9da0a8", strokeWidth: 1.1 }
+    { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)", strokeWidth: 1.1 }
   );
 export const IcRascunhos = ({ tamanho = 16 }: P) =>
   svg(
@@ -283,7 +284,7 @@ export const IcRascunhos = ({ tamanho = 16 }: P) =>
       <rect x="2" y="2.5" width="12" height="11" rx="1.5" />
       <path d="M4.5 6l2 2-2 2M8 10h3" />
     </>,
-    { ...traco, stroke: "#9da0a8", strokeWidth: 1.1 }
+    { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)", strokeWidth: 1.1 }
   );
 
 // Arquivos
@@ -314,7 +315,7 @@ export type TipoIcone =
 
 const letra = (t: number, l: string, cor: string, extra?: React.ReactNode) => (
   <svg viewBox="0 0 16 16" width={t} height={t} aria-hidden="true" style={{ flex: "none" }}>
-    <circle cx="8" cy="8" r="6.6" fill={`${cor}2e`} stroke={cor} strokeWidth="1.1" />
+    <circle cx="8" cy="8" r="6.6" fill={cor} fillOpacity={0.18} stroke={cor} strokeWidth="1.1" />
     <text x="8" y="11.2" textAnchor="middle" fontFamily="Inter, Segoe UI, sans-serif" fontWeight="700" fontSize="8.6" fill={cor}>
       {l}
     </text>
@@ -324,7 +325,7 @@ const letra = (t: number, l: string, cor: string, extra?: React.ReactNode) => (
 
 const rotulo = (t: number, txt: string, cor: string, fs = 6.6) => (
   <svg viewBox="0 0 16 16" width={t} height={t} aria-hidden="true" style={{ flex: "none" }}>
-    <path d="M3 1.8h6.6L13 5.2v9H3z" fill="none" stroke="#9da0a8" strokeWidth="1" strokeLinejoin="round" />
+    <path d="M3 1.8h6.6L13 5.2v9H3z" fill="none" stroke="var(--ij-ico-cinza, #9da0a8)" strokeWidth="1" strokeLinejoin="round" />
     <rect x="1" y="7.6" width="12.4" height="6.2" rx="1.2" fill={cor} />
     <text x="7.2" y="12.6" textAnchor="middle" fontFamily="Inter, Segoe UI, sans-serif" fontWeight="800" fontSize={fs} fill="#fff">
       {txt}
@@ -336,19 +337,19 @@ export function IcArquivo({ tipo, tamanho = 16 }: P & { tipo: TipoIcone }) {
   const t = tamanho;
   switch (tipo) {
     case "classe":
-      return letra(t, "C", "#548af7");
+      return letra(t, "C", "var(--ij-ico-azul, #548af7)");
     case "interface":
-      return letra(t, "I", "#5fb865");
+      return letra(t, "I", "var(--ij-ico-verde, #5fb865)");
     case "enum":
       return letra(t, "E", "#d6a14b");
     case "record":
-      return letra(t, "R", "#548af7");
+      return letra(t, "R", "var(--ij-ico-azul, #548af7)");
     case "anotacao":
-      return letra(t, "@", "#5fb865");
+      return letra(t, "@", "var(--ij-ico-verde, #5fb865)");
     case "aplicacao":
-      return letra(t, "C", "#548af7", <path d="M10.6 10.2v4.6l3.8-2.3z" fill="#5fb865" stroke="#1e1f22" strokeWidth=".6" />);
+      return letra(t, "C", "var(--ij-ico-azul, #548af7)", <path d="M10.6 10.2v4.6l3.8-2.3z" fill="var(--ij-ico-verde, #5fb865)" stroke="var(--ij-editor, #1e1f22)" strokeWidth=".6" />);
     case "teste":
-      return letra(t, "C", "#548af7", <circle cx="12.6" cy="12.6" r="2.6" fill="#5fb865" stroke="#1e1f22" strokeWidth=".6" />);
+      return letra(t, "C", "var(--ij-ico-azul, #548af7)", <circle cx="12.6" cy="12.6" r="2.6" fill="var(--ij-ico-verde, #5fb865)" stroke="var(--ij-editor, #1e1f22)" strokeWidth=".6" />);
     case "maven":
       return (
         <svg viewBox="0 0 16 16" width={t} height={t} aria-hidden="true" style={{ flex: "none" }}>
@@ -365,8 +366,8 @@ export function IcArquivo({ tipo, tamanho = 16 }: P & { tipo: TipoIcone }) {
       return svg(
         t,
         <>
-          <ellipse cx="8" cy="4" rx="5" ry="1.8" stroke="#548af7" />
-          <path d="M3 4v8.2c0 1 2.2 1.8 5 1.8s5-.8 5-1.8V4M3 8.1c0 1 2.2 1.8 5 1.8s5-.8 5-1.8" stroke="#548af7" />
+          <ellipse cx="8" cy="4" rx="5" ry="1.8" stroke="var(--ij-ico-azul, #548af7)" />
+          <path d="M3 4v8.2c0 1 2.2 1.8 5 1.8s5-.8 5-1.8V4M3 8.1c0 1 2.2 1.8 5 1.8s5-.8 5-1.8" stroke="var(--ij-ico-azul, #548af7)" />
         </>,
         { ...traco, strokeWidth: 1.1 }
       );
@@ -399,7 +400,7 @@ export function IcArquivo({ tipo, tamanho = 16 }: P & { tipo: TipoIcone }) {
           <circle cx="8" cy="8" r="5.6" />
           <path d="M4 12l8-8" />
         </>,
-        { ...traco, stroke: "#9da0a8" }
+        { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)" }
       );
     case "shell":
     case "cmd":
@@ -409,7 +410,7 @@ export function IcArquivo({ tipo, tamanho = 16 }: P & { tipo: TipoIcone }) {
           <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" />
           <path d="M4.5 6l2 2-2 2M8.5 10.5h3" />
         </>,
-        { ...traco, stroke: "#9da0a8", strokeWidth: 1.1 }
+        { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)", strokeWidth: 1.1 }
       );
     case "html":
       return rotulo(t, "<>", "#e07b39", 6);
@@ -432,7 +433,7 @@ export function IcArquivo({ tipo, tamanho = 16 }: P & { tipo: TipoIcone }) {
           <rect x="3" y="2" width="10" height="12" rx="1.2" />
           <path d="M8 2v6M6.6 4h2.8M6.6 6h2.8" />
         </>,
-        { ...traco, stroke: "#9da0a8", strokeWidth: 1.1 }
+        { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)", strokeWidth: 1.1 }
       );
     case "jdk":
       return svg(
@@ -450,10 +451,10 @@ export function IcArquivo({ tipo, tamanho = 16 }: P & { tipo: TipoIcone }) {
           <circle cx="8" cy="8" r="6" />
           <path d="M2 8h12M8 2c2 2 2 10 0 12M8 2c-2 2-2 10 0 12" />
         </>,
-        { ...traco, stroke: "#548af7", strokeWidth: 1.1 }
+        { ...traco, stroke: "var(--ij-ico-azul, #548af7)", strokeWidth: 1.1 }
       );
     default:
-      return svg(t, <path d="M3.5 1.8h6.1L12.5 5v9.2h-9z" />, { ...traco, stroke: "#9da0a8", strokeWidth: 1 });
+      return svg(t, <path d="M3.5 1.8h6.1L12.5 5v9.2h-9z" />, { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)", strokeWidth: 1 });
   }
 }
 
@@ -530,10 +531,10 @@ export const IcObjetivo = ({ tamanho = 16 }: P) =>
       <circle cx="8" cy="8" r="2" />
       <path d="M8 2.5v1.6M8 11.9v1.6M13.5 8h-1.6M4.1 8H2.5M11.9 4.1l-1.1 1.1M5.2 10.8l-1.1 1.1M11.9 11.9l-1.1-1.1M5.2 5.2L4.1 4.1" />
     </>,
-    { ...traco, stroke: "#9da0a8" }
+    { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)" }
   );
 export const IcPlugin = ({ tamanho = 16 }: P) =>
-  svg(tamanho, <path d="M6 2.5h4v3h2.5v4H10v4H6v-4H3.5v-4H6z" />, { ...traco, stroke: "#9da0a8" });
+  svg(tamanho, <path d="M6 2.5h4v3h2.5v4H10v4H6v-4H3.5v-4H6z" />, { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)" });
 export const IcDependencia = ({ tamanho = 16 }: P) =>
   svg(
     tamanho,
@@ -541,14 +542,14 @@ export const IcDependencia = ({ tamanho = 16 }: P) =>
       <rect x="2.5" y="2.5" width="11" height="11" rx="1.5" />
       <path d="M2.5 6.5h11M6.5 6.5v7" />
     </>,
-    { ...traco, stroke: "#9da0a8", strokeWidth: 1.1 }
+    { ...traco, stroke: "var(--ij-ico-cinza, #9da0a8)", strokeWidth: 1.1 }
   );
 export const IcBaixar = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M8 2.5v8M4.5 7L8 10.5 11.5 7M3 13.5h10" />);
 export const IcRemover = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M3 8h10" />);
 export const IcRaio = ({ tamanho = 16 }: P) => svg(tamanho, <path d="M9 1.8L3.8 9h4l-1 5.2L12.2 7h-4z" />);
-export const IcCommitGrafo = ({ cor = "#548af7" }: { cor?: string }) => (
+export const IcCommitGrafo = ({ cor = "var(--ij-ico-azul, #548af7)" }: { cor?: string }) => (
   <svg viewBox="0 0 16 20" width={16} height={20} aria-hidden="true" style={{ flex: "none" }}>
     <path d="M8 0v20" stroke={cor} strokeWidth="1.6" />
-    <circle cx="8" cy="10" r="3.4" fill="#1e1f22" stroke={cor} strokeWidth="1.6" />
+    <circle cx="8" cy="10" r="3.4" fill="var(--ij-editor, #1e1f22)" stroke={cor} strokeWidth="1.6" />
   </svg>
 );

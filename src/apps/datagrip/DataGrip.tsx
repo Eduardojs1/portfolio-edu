@@ -3,6 +3,7 @@ import type { ControleJanela } from "../../sistema/contexto";
 import { useSistema } from "../../sistema/contexto";
 import { IconeDataGrip } from "../../sistema/icones";
 import { sql as realcarSql } from "../intellij/realce";
+import { classeTema, useTemaIde } from "../intellij/tema";
 import { tabelas, formatar, type Tabela, type Valor } from "./banco";
 import { executar, type Resultado } from "./sql";
 import {
@@ -52,8 +53,8 @@ SELECT * FROM contato;
 // Ícones pequenos do DataGrip
 const IcTabela = () => (
   <svg viewBox="0 0 16 16" width={16} height={16} aria-hidden="true" style={{ flex: "none" }}>
-    <rect x="2" y="3" width="12" height="10" rx="1.2" fill="none" stroke="#548af7" strokeWidth="1.1" />
-    <path d="M2 6.5h12M6.5 6.5V13" stroke="#548af7" strokeWidth="1.1" />
+    <rect x="2" y="3" width="12" height="10" rx="1.2" fill="none" stroke="var(--ij-ico-azul, #548af7)" strokeWidth="1.1" />
+    <path d="M2 6.5h12M6.5 6.5V13" stroke="var(--ij-ico-azul, #548af7)" strokeWidth="1.1" />
   </svg>
 );
 const IcColuna = ({ pk }: { pk?: boolean }) =>
@@ -64,14 +65,14 @@ const IcColuna = ({ pk }: { pk?: boolean }) =>
     </svg>
   ) : (
     <svg viewBox="0 0 16 16" width={16} height={16} aria-hidden="true" style={{ flex: "none" }}>
-      <rect x="5" y="2.5" width="6" height="11" rx="1" fill="none" stroke="#9da0a8" strokeWidth="1.1" />
-      <path d="M5 6h6M5 9.5h6" stroke="#9da0a8" strokeWidth="1.1" />
+      <rect x="5" y="2.5" width="6" height="11" rx="1" fill="none" stroke="var(--ij-ico-cinza, #9da0a8)" strokeWidth="1.1" />
+      <path d="M5 6h6M5 9.5h6" stroke="var(--ij-ico-cinza, #9da0a8)" strokeWidth="1.1" />
     </svg>
   );
 const IcConsole = () => (
   <svg viewBox="0 0 16 16" width={16} height={16} aria-hidden="true" style={{ flex: "none" }}>
-    <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" fill="none" stroke="#9da0a8" strokeWidth="1.1" />
-    <text x="8" y="11" textAnchor="middle" fontSize="6" fontWeight="700" fill="#548af7" fontFamily="Inter, sans-serif">
+    <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" fill="none" stroke="var(--ij-ico-cinza, #9da0a8)" strokeWidth="1.1" />
+    <text x="8" y="11" textAnchor="middle" fontSize="6" fontWeight="700" fill="var(--ij-ico-azul, #548af7)" fontFamily="Inter, sans-serif">
       SQL
     </text>
   </svg>
@@ -213,6 +214,7 @@ type Saida = { id: number; sql: string; resultado: Resultado; hora: string };
 
 export function DataGrip({ janela }: { janela: ControleJanela }) {
   const { celular } = useSistema();
+  const tema = useTemaIde(); // segue o tema escolhido no IntelliJ
   const [explorer, setExplorer] = useState(!celular);
   const [abertos, setAbertos] = useState<Set<string>>(() => new Set(["db", "db/portfolio", "db/portfolio/public", "db/tabelas"]));
   const [selArvore, setSelArvore] = useState<string | null>(null);
@@ -289,7 +291,7 @@ export function DataGrip({ janela }: { janela: ControleJanela }) {
   );
 
   return (
-    <div className={`ij dg${celular ? " celular" : ""}`}>
+    <div className={`ij dg${classeTema(tema)}${celular ? " celular" : ""}`}>
       <header className="ij-topo" data-arrastar>
         <span className="ij-logo" aria-hidden="true">
           <IconeDataGrip tamanho={20} />

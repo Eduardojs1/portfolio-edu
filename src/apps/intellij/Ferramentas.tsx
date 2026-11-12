@@ -324,7 +324,7 @@ export function JanelaGit() {
         {commits.length ? (
           commits.map((cm, i) => (
             <button key={cm.hash} role="option" aria-selected={i === sel} className={`tw-git-commit${i === sel ? " sel" : ""}`} onClick={() => setSel(i)}>
-              <IcCommitGrafo cor={i === 0 ? "#5fb865" : "#548af7"} />
+              <IcCommitGrafo cor={i === 0 ? "var(--ij-ico-verde, #5fb865)" : "var(--ij-ico-azul, #548af7)"} />
               <span className="tw-git-msg">
                 {cm.msg}
                 {i === 0 && (
