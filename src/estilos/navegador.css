@@ -1,0 +1,99 @@
+/* ==========================================================================
+   Navegador (o portfólio como site comum)
+   ========================================================================== */
+.br {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: #202124;
+  color: #e8eaed;
+  font-family: var(--f-ui);
+}
+.br-abas { display: flex; align-items: flex-end; flex: none; height: 42px; padding: 0 0 0 8px; background: #1b1c1f; user-select: none; }
+.br-aba {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(260px, 60%);
+  height: 34px;
+  padding: 0 8px 0 12px;
+  border-radius: 10px 10px 0 0;
+  background: #35363a;
+  font-size: 12.5px;
+}
+.br-favicon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--destaque-1), var(--destaque-3));
+  color: #1e1f22;
+  font-size: 7px;
+  font-weight: 800;
+}
+.br-aba-titulo { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.br-aba-fechar { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: #bdc1c6; }
+.br-aba-fechar:hover { background: rgba(255, 255, 255, 0.12); }
+.br-janela { display: flex; align-self: stretch; }
+.br-janela button { display: grid; place-items: center; width: 46px; color: #e8eaed; }
+.br-janela button:hover { background: rgba(255, 255, 255, 0.1); }
+.br-janela button.fechar:hover { background: #c42b1c; color: #fff; }
+
+.br-barra { display: flex; align-items: center; gap: 4px; flex: none; height: 44px; padding: 0 8px; background: #35363a; }
+.br-barra > button { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: #e8eaed; }
+.br-barra > button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
+.br-barra > button:disabled { color: #6f737a; }
+.br-endereco {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  margin: 0 6px;
+  padding: 0 14px;
+  border-radius: 16px;
+  background: #202124;
+  color: #9aa0a6;
+  font-size: 14px;
+}
+.br-endereco span { color: #e8eaed; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.br-dica {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  padding: 8px 14px;
+  border-bottom: 1px solid #3c4043;
+  background: #2a2b2f;
+  color: #c9ccd3;
+  font-size: 13px;
+}
+.br-dica button:not(.br-dica-fechar) { margin-left: 4px; color: #8ab4f8; font-weight: 500; }
+.br-dica button:not(.br-dica-fechar):hover { text-decoration: underline; }
+.br-dica-fechar { display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; color: #9aa0a6; }
+.br-dica-fechar:hover { background: rgba(255, 255, 255, 0.1); }
+
+.br-conteudo { flex: 1; min-height: 0; overflow: auto; container-type: inline-size; background: #16171a; }
+
+.br-aviso {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #e8eaed;
+  color: #202124;
+  font-weight: 500;
+  transform: translateX(-50%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.br.celular .br-aba { width: 70%; }
+.br.celular .br-endereco { font-size: 13px; }
