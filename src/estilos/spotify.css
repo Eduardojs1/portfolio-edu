@@ -99,6 +99,17 @@
   opacity: 0.6;
 }
 .sp-capa-curtidas { display: grid; place-items: center; background: linear-gradient(135deg, #450af5, #8e8ee5); font-size: 20px; }
+.sp-capa.sem-codigo::after { content: none; }
+
+/* Playlist do Spotify de verdade (player oficial embutido) */
+.sp-embed-area { padding: 24px 24px 8px; }
+.sp-embed { display: block; width: 100%; height: 452px; border: 0; border-radius: 12px; background: #282828; }
+.sp-embed-area .sp-nota { padding: 14px 4px 24px; }
+.sp-embed-area .sp-nota a { color: #fff; font-weight: 600; text-decoration: none; }
+.sp-embed-area .sp-nota a:hover { text-decoration: underline; }
+.sp-chips { display: flex; gap: 8px; padding: 12px 12px 0; overflow-x: auto; scrollbar-width: none; }
+.sp-chips button { flex: none; padding: 6px 12px; border-radius: 16px; background: #2a2a2a; color: #fff; font-size: 13px; white-space: nowrap; }
+.sp-chips button.ativo { background: var(--sp-verde); color: #000; }
 .sp-capa-curtidas::after { content: none; }
 .sp-capa-grande { width: 180px; height: 180px; font-size: 70px; }
 
@@ -215,3 +226,5 @@
 .sp.celular .sp-faixas { width: calc(100% - 8px); margin: 0 4px; }
 .sp.celular .sp-player { grid-template-columns: minmax(0, 1fr) auto; }
 .sp.celular .sp-progresso { display: none; }
+.sp.celular .sp-embed-area { padding: 16px 12px 4px; }
+.sp.celular .sp-embed { height: 380px; }

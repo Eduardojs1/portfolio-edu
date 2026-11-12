@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ControleJanela } from "../../sistema/contexto";
 import { useSistema } from "../../sistema/contexto";
 import { ouvir } from "../../sistema/eventos";
-import { musicas, playlist, type Musica } from "../../dados/musicas";
+import { linkEmbed, musicas, playlist, playlistsSpotify, type Musica } from "../../dados/musicas";
 import { perfil } from "../../dados/perfil";
 import { IcFecharJanela, IcMaximizarJanela, IcMinimizarJanela, IcRestaurarJanela } from "../intellij/icones";
 import { Lofi } from "./lofi";
@@ -53,10 +53,10 @@ function Equalizador() {
   );
 }
 
-function Capa({ cor, texto, tamanho }: { cor: string; texto?: string; tamanho: number }) {
+function Capa({ cor, texto, tamanho, semCodigo }: { cor: string; texto?: string; tamanho: number; semCodigo?: boolean }) {
   return (
     <span
-      className="sp-capa"
+      className={`sp-capa${semCodigo ? " sem-codigo" : ""}`}
       style={{ width: tamanho, height: tamanho, fontSize: Math.max(8, tamanho * 0.12), background: `linear-gradient(135deg, ${cor}, #1b1b1f 85%)` }}
       aria-hidden="true"
     >
@@ -65,7 +65,7 @@ function Capa({ cor, texto, tamanho }: { cor: string; texto?: string; tamanho: n
   );
 }
 
-type Lista = "playlist" | "curtidas";
+type Lista = "playlist" | "curtidas" | `ext:${string}`;
 
 export function Spotify({ janela }: { janela: ControleJanela }) {
   const { celular, mudo } = useSistema();
@@ -76,11 +76,13 @@ export function Spotify({ janela }: { janela: ControleJanela }) {
   const [volume, setVolume] = useState(0.8);
   const [semSom, setSemSom] = useState(false);
   const [curtidas, setCurtidas] = useState<Set<string>>(() => new Set(["build", "tomcat"]));
-  const [lista, setLista] = useState<Lista>("playlist");
+  // Abre na playlist do Spotify de verdade (Tarcísio); o lo-fi fica em "Músicas pra codar"
+  const [lista, setLista] = useState<Lista>(playlistsSpotify[0] ? `ext:${playlistsSpotify[0].id}` : "playlist");
   const [aleatorio, setAleatorio] = useState(false);
 
   const faixas = useMemo(() => (lista === "curtidas" ? musicas.filter((m) => curtidas.has(m.id)) : musicas), [lista, curtidas]);
   const musica = atual !== null ? musicas[atual] : null;
+  const externa = playlistsSpotify.find((p) => `ext:${p.id}` === lista);
 
   const tocarIndice = useCallback((i: number, aPartirDe = 0) => {
     if (!motor.current) motor.current = new Lofi();
@@ -131,7 +133,15 @@ export function Spotify({ janela }: { janela: ControleJanela }) {
   useEffect(() => () => motor.current?.fechar(), []);
 
   // Pedido do menu Iniciar: "Músicas pra codar"
-  useEffect(() => ouvir("spotify:tocar", () => tocarIndice(0)), [tocarIndice]);
+  // "Tocar" do tour e do menu Iniciar: mostra o lo-fi e já toca
+  useEffect(
+    () =>
+      ouvir("spotify:tocar", () => {
+        setLista("playlist");
+        tocarIndice(0);
+      }),
+    [tocarIndice]
+  );
 
   const curtir = (id: string) =>
     setCurtidas((s) => {
@@ -142,6 +152,15 @@ export function Spotify({ janela }: { janela: ControleJanela }) {
     });
 
   const titulo = lista === "curtidas" ? "Músicas Curtidas" : playlist.nome;
+
+  // Abrir uma playlist do Spotify de verdade pausa o lo-fi, para não tocar os dois juntos
+  const abrirLista = (l: Lista) => {
+    setLista(l);
+    if (l.startsWith("ext:") && tocando) {
+      motor.current?.pausar();
+      setTocando(false);
+    }
+  };
 
   return (
     <div className={`sp${celular ? " celular" : ""}`}>
@@ -199,7 +218,7 @@ export function Spotify({ janela }: { janela: ControleJanela }) {
             </div>
             <ul className="sp-bibliotecas">
               <li>
-                <button className={lista === "curtidas" ? "ativo" : ""} onClick={() => setLista("curtidas")}>
+                <button className={lista === "curtidas" ? "ativo" : ""} onClick={() => abrirLista("curtidas")}>
                   <span className="sp-capa sp-capa-curtidas" style={{ width: 48, height: 48 }}>
                     ♥
                   </span>
@@ -210,7 +229,7 @@ export function Spotify({ janela }: { janela: ControleJanela }) {
                 </button>
               </li>
               <li>
-                <button className={lista === "playlist" ? "ativo" : ""} onClick={() => setLista("playlist")}>
+                <button className={lista === "playlist" ? "ativo" : ""} onClick={() => abrirLista("playlist")}>
                   <Capa cor="#e0674a" tamanho={48} texto="lo-fi" />
                   <span>
                     <strong className={atual !== null ? "verde" : ""}>{playlist.nome}</strong>
@@ -218,11 +237,70 @@ export function Spotify({ janela }: { janela: ControleJanela }) {
                   </span>
                 </button>
               </li>
+              {playlistsSpotify.map((p) => (
+                <li key={p.id}>
+                  <button className={lista === `ext:${p.id}` ? "ativo" : ""} onClick={() => abrirLista(`ext:${p.id}`)}>
+                    <Capa cor={p.cor} tamanho={48} texto={p.capa} semCodigo />
+                    <span>
+                      <strong>{p.curto}</strong>
+                      <small>Playlist · Spotify</small>
+                    </span>
+                  </button>
+                </li>
+              ))}
             </ul>
           </aside>
         )}
 
         <main className="sp-principal">
+          {celular && (
+            <div className="sp-chips">
+              <button className={lista === "playlist" ? "ativo" : ""} onClick={() => abrirLista("playlist")}>
+                Pra codar
+              </button>
+              <button className={lista === "curtidas" ? "ativo" : ""} onClick={() => abrirLista("curtidas")}>
+                Curtidas
+              </button>
+              {playlistsSpotify.map((p) => (
+                <button key={p.id} className={lista === `ext:${p.id}` ? "ativo" : ""} onClick={() => abrirLista(`ext:${p.id}`)}>
+                  {p.curto}
+                </button>
+              ))}
+            </div>
+          )}
+          {externa ? (
+            <>
+              <div className="sp-cabecalho" style={{ ["--sp-cor" as string]: externa.cor }}>
+                <Capa cor={externa.cor} tamanho={celular ? 130 : 180} texto={externa.capa} semCodigo />
+                <div className="sp-cabecalho-texto">
+                  <span className="sp-tipo">Playlist</span>
+                  <h1>{externa.curto}</h1>
+                  <p className="sp-descricao">{externa.descricao}</p>
+                  <p className="sp-meta">
+                    <strong>Spotify</strong> · {externa.nome}
+                  </p>
+                </div>
+              </div>
+              <div className="sp-embed-area">
+                <iframe
+                  key={externa.id}
+                  className="sp-embed"
+                  title={`${externa.nome} no Spotify`}
+                  src={`${linkEmbed(externa.link)}?utm_source=generator&theme=0`}
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                />
+                <p className="sp-nota">
+                  Essas são as músicas de verdade, no player do próprio Spotify: sem login toca uma prévia de 30 segundos; logado no Spotify
+                  neste navegador, toca inteira.{" "}
+                  <a href={externa.link} target="_blank" rel="noopener">
+                    Abrir no Spotify ↗
+                  </a>
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
           <div className="sp-cabecalho" style={{ ["--sp-cor" as string]: lista === "curtidas" ? "#5038a0" : "#a3472f" }}>
             {lista === "curtidas" ? (
               <span className="sp-capa sp-capa-curtidas sp-capa-grande">♥</span>
@@ -299,6 +377,8 @@ export function Spotify({ janela }: { janela: ControleJanela }) {
           <p className="sp-nota">
             As músicas são geradas no navegador (Web Audio). Dá o play e deixa rodando enquanto vê o código. 🎧
           </p>
+            </>
+          )}
         </main>
       </div>
 

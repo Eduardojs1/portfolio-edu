@@ -28,3 +28,32 @@ export const musicas: Musica[] = [
   { id: "stack", titulo: "Pergunta fechada como duplicada", artista: "Café com Java", album: "Lo-fi pra codar", adicionada: "há 3 semanas", duracao: 164, bpm: 80, acordes: ["Bbmaj7", "Am7", "Gm7", "Fmaj7"] },
   { id: "tomcat", titulo: "Tomcat started on port 8080", artista: "Os Full Stack", album: "Spring", adicionada: "há 1 mês", duracao: 140, bpm: 86, acordes: ["Abmaj7", "Gm7", "Fm9", "Ebmaj7"] },
 ];
+
+// Playlists de verdade, tocadas pelo player oficial do Spotify (o "embed").
+// Sem login no Spotify toca uma prévia de 30 s; logado no navegador, toca a música inteira.
+// Para trocar ou adicionar: no Spotify, Compartilhar → Copiar link (da playlist, álbum ou artista).
+export type PlaylistSpotify = {
+  id: string;
+  nome: string;
+  curto: string; // nome na barra lateral
+  descricao: string;
+  link: string;
+  cor: string; // cor da capa e do topo da página
+  capa: string; // texto da capa
+};
+
+export const playlistsSpotify: PlaylistSpotify[] = [
+  {
+    id: "tarcisio",
+    nome: "This Is Tarcísio do Acordeon",
+    curto: "Tarcísio do Acordeon",
+    descricao: "Forró e piseiro pra quando o código pede uma pausa.",
+    link: "https://open.spotify.com/playlist/37i9dQZF1DZ06evO2pZ7Da",
+    cor: "#b8742a",
+    capa: "forró",
+  },
+];
+
+// open.spotify.com/playlist/ID → open.spotify.com/embed/playlist/ID
+export const linkEmbed = (link: string) =>
+  link.replace(/open\.spotify\.com\/(intl-[a-z-]+\/)?/i, "open.spotify.com/embed/").split("?")[0];
