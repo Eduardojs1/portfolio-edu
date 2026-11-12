@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Guia: o atalho do LEIA-ME na barra e o tour em post-its
+   ========================================================================== */
+
+/* "LEIA-ME" no canto da barra de tarefas (onde o Windows põe o clima) */
+.bt-guia {
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px 0 8px;
+  border-radius: 6px;
+  color: #fff;
+}
+.bt-guia:hover { background: rgba(255, 255, 255, 0.08); }
+.bt-guia span { display: grid; text-align: left; line-height: 1.2; font-size: 12.5px; }
+.bt-guia small { font-size: 11.5px; color: #b9bcc4; }
+.bt-guia.chamar,
+.bt-botao.chamar { animation: chamar 1.4s ease-out 3; }
+@keyframes chamar {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45); }
+  100% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+}
+
+/* Tour */
+.tour-luz {
+  position: fixed;
+  z-index: 1050;
+  border-radius: 10px;
+  box-shadow: 0 0 0 9999px rgba(6, 7, 10, 0.42);
+  pointer-events: none;
+}
+.tour-escuro { position: fixed; inset: 0; z-index: 1050; background: rgba(6, 7, 10, 0.38); pointer-events: none; }
+
+/* Marca-texto: contorno e seta "desenhados" na hora */
+.tour-marcas { position: fixed; inset: 0; z-index: 1060; width: 100vw; height: 100vh; overflow: visible; pointer-events: none; }
+.tour-marcas path {
+  fill: none;
+  stroke: #ff6a3d;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.92;
+  animation: riscar 0.55s ease-out forwards;
+}
+.tour-marcas .tour-seta { stroke-width: 2.6; animation-delay: 0.35s; }
+.tour-marcas .tour-ponta { stroke-width: 2.6; animation-delay: 0.7s; animation-duration: 0.2s; }
+@keyframes riscar { to { stroke-dashoffset: 0; } }
+
+/* Post-it */
+.tour-postit {
+  position: fixed;
+  z-index: 1300;
+  width: 300px;
+  padding: 16px 18px 12px;
+  background: linear-gradient(170deg, #fbe47f, #f3cf52);
+  color: #26221a;
+  font-family: Caveat, "Segoe Print", "Comic Sans MS", cursive;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.25);
+  transform: rotate(var(--giro, -1deg));
+  animation: colar 0.25s ease-out;
+}
+@keyframes colar {
+  from { opacity: 0; transform: rotate(var(--giro, -1deg)) translateY(-8px) scale(1.03); }
+}
+.tour-postit.embaixo { left: 12px; right: 12px; bottom: 60px; width: auto; }
+.tour-fita {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 84px;
+  height: 22px;
+  margin-left: -42px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transform: rotate(-3deg);
+}
+.tour-x { position: absolute; top: 4px; right: 8px; font-family: inherit; font-size: 26px; line-height: 1; color: #5a5137; }
+.tour-x:hover { color: #000; }
+.tour-num { font-size: 18px; color: #7a6b3d; }
+.tour-texto { margin-top: 2px; font-size: 24px; line-height: 1.12; }
+.tour-acoes { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: flex-end; gap: 4px 16px; margin-top: 12px; }
+.tour-acoes button { font-family: inherit; font-size: 22px; color: #3a3426; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.tour-acoes button:hover { color: #000; }
+.tour-acoes .forte { font-weight: 700; color: #b8441b; }
+
+/* Bolinha "clique aqui" no ▶ do IntelliJ, até a primeira vez */
+.ij-tb-rodar.chamar { position: relative; }
+.ij-tb-rodar.chamar::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 8px;
+  animation: rodar-pulso 1.8s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes rodar-pulso {
+  0% { box-shadow: 0 0 0 0 rgba(95, 184, 101, 0.65); }
+  100% { box-shadow: 0 0 0 10px rgba(95, 184, 101, 0); }
+}

@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Base: reset, fontes e utilitários
+   ========================================================================== */
+:root {
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --f-display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --f-ui: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --destaque-1: #f2b45a;
+  --destaque-2: #cf8e6d;
+  --destaque-3: #e0674a;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: #0b0c0e;
+  color: #dfe1e5;
+  font-family: var(--f-ui);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  font-variant-ligatures: no-contextual;
+  overflow: hidden;
+}
+
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+button:disabled { cursor: default; }
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+:focus-visible { outline: 2px solid #3574f0; outline-offset: -2px; border-radius: 4px; }
+::selection { background: #214283; }
+
+* { scrollbar-width: thin; scrollbar-color: #4d5057 transparent; }
+
+.espaco { flex: 1; }
+[hidden] { display: none !important; }
+
+/* Arrastando janela ou divisória: nada de selecionar texto */
+body.arrastando { user-select: none; }
+body.arrastando iframe { pointer-events: none; }
+body.arrastando-h { cursor: col-resize; }
+body.arrastando-v { cursor: row-resize; }
+
+.piscar { animation: piscar 1.4s ease-out; }
+@keyframes piscar {
+  0%, 30% { box-shadow: 0 0 0 2px #3574f0; }
+  100% { box-shadow: 0 0 0 2px transparent; }
+}
+@keyframes piscar-cursor { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+}
