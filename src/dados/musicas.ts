@@ -14,7 +14,9 @@ export type Musica = {
 
 export const playlist = {
   nome: "Músicas pra codar",
+  nomeEn: "Music for coding",
   descricao: "Lo-fi gerado no navegador enquanto o build roda.",
+  descricaoEn: "Lo-fi generated in the browser while the build runs.",
   dono: "Eduardo",
 };
 
@@ -37,6 +39,7 @@ export type PlaylistSpotify = {
   nome: string;
   curto: string; // nome na barra lateral
   descricao: string;
+  descricaoEn: string;
   link: string;
   cor: string; // cor da capa e do topo da página
   capa: string; // texto da capa
@@ -48,6 +51,7 @@ export const playlistsSpotify: PlaylistSpotify[] = [
     nome: "This Is Tarcísio do Acordeon",
     curto: "Tarcísio do Acordeon",
     descricao: "Forró e piseiro pra quando o código pede uma pausa.",
+    descricaoEn: "Forró and piseiro for when the code needs a break.",
     link: "https://open.spotify.com/playlist/37i9dQZF1DZ06evO2pZ7Da",
     cor: "#b8742a",
     capa: "forró",
