@@ -80,10 +80,20 @@ Outros pontos:
 
 A versão em forma de chat está guardada em `versao-chat/`. Ela não entra no build.
 
-## Publicar
+## Publicar (Cloudflare Pages, de graça)
 
-```bash
-npm run build
-```
+O site é estático: `npm run build` gera a pasta `dist/` e é ela que vai para o ar.
+O projeto já vem pronto para a Cloudflare: `.node-version` pede o Node 22 e
+`public/_headers` deixa os arquivos do build em cache e liga uns cabeçalhos de segurança.
 
-Gera a pasta `dist/`. Na Vercel, importe o repositório e ela detecta o Vite sozinha.
+1. Em [dash.cloudflare.com](https://dash.cloudflare.com), vá em **Workers & Pages → Create → Pages → Connect to Git** e escolha o repositório `portfolio-edu` do GitHub.
+2. Na configuração do build:
+   - **Framework preset:** Vite (ou None)
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+3. **Save and Deploy.** O site fica em `portfolio-edu.pages.dev` (ou parecido) e cada push na `main` publica de novo sozinho.
+
+### Domínio próprio
+
+- **.com, .dev, .me…** dá para comprar na própria Cloudflare (**Domain Registration → Register Domains**), a preço de custo. Depois, no projeto: **Custom domains → Set up a custom domain**. O DNS e o HTTPS se configuram sozinhos.
+- **.com.br** a Cloudflare não vende: compre no [Registro.br](https://registro.br). Depois, na Cloudflare, **Add a domain** (plano Free), troque no Registro.br os servidores DNS pelos dois que a Cloudflare mostrar e, quando o domínio ficar ativo, conecte em **Custom domains**.

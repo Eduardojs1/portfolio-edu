@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // Branch e últimos commits, para o widget do git, a janela Git e o "git log" do terminal.
-// Sem a pasta .git (alguns deploys), usa o que a Vercel informa.
+// Sem a pasta .git (alguns deploys), usa o que a Cloudflare Pages (ou a Vercel) informa.
 function git(args: string[]) {
   try {
     return execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
@@ -23,9 +23,9 @@ function infoGit() {
       }),
     };
   }
-  const sha = process.env.VERCEL_GIT_COMMIT_SHA;
+  const sha = process.env.CF_PAGES_COMMIT_SHA || process.env.VERCEL_GIT_COMMIT_SHA;
   return {
-    branch: process.env.VERCEL_GIT_COMMIT_REF || "main",
+    branch: process.env.CF_PAGES_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "main",
     commits: sha
       ? [
           {
