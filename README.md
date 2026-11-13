@@ -50,6 +50,7 @@ Outros pontos:
 - **A tela do monitor na mesa** é uma imagem: `public/img/tela.webp`. Se mudar o visual do desktop, tire um print de `http://localhost:5173/#intellij` em 1920×1080 (espere uns 5 segundos, até o projeto terminar de subir) e salve por cima.
 - **Tema Light**: `src/estilos/intellij-claro.css` (vale para IntelliJ e DataGrip) e `src/apps/intellij/tema.ts`.
 - **Foto**: `public/img/eduardo.webp` (README, site e retrato em partículas).
+- **Prévia do link** (a imagem que aparece ao mandar o link no LinkedIn, WhatsApp, Discord…): `public/img/previa.jpg`, 1200×630, uma foto da mesa fora da época de Natal. As tags ficam no `index.html`; se trocar o domínio, troque lá também.
 
 ## Links diretos
 
@@ -81,6 +82,8 @@ Outros pontos:
 A versão em forma de chat está guardada em `versao-chat/`. Ela não entra no build.
 
 ## Publicar (Cloudflare Pages, de graça)
+
+No ar em **[eduardojsdev.com](https://eduardojsdev.com)**.
 
 O site é estático: `npm run build` gera a pasta `dist/` e é ela que vai para o ar.
 O projeto já vem pronto para a Cloudflare: `.node-version` pede o Node 22 e
