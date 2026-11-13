@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useState } from "react";
 import { Desktop } from "./sistema/Desktop";
+import { TelaBoot } from "./intro/TelaBoot";
 import { reduzMovimento } from "./util";
 
 const Intro = lazy(() => import("./intro/Intro").then((m) => ({ default: m.Intro })));
@@ -25,7 +26,7 @@ export default function App() {
     <>
       {desktopMontado && <Desktop ativo={fase === "desktop"} onDesligar={desligar} />}
       {fase === "intro" && (
-        <Suspense fallback={<div className="intro-carregando"><span>Ligando o PC…</span></div>}>
+        <Suspense fallback={voltando ? null : <TelaBoot pronto={false} />}>
           <Intro key={voltando ? "volta" : "ida"} voltando={voltando} onQuaseLa={quaseLa} onEntrar={entrar} />
         </Suspense>
       )}

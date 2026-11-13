@@ -1,7 +1,7 @@
 // A mesa em 3D, feita só com primitivas do Three.js (nenhum modelo baixado):
 // mesa de madeira envernizada, monitor num braço articulado com barra de luz,
 // teclado gamer com RGB e cabo espiral, mouse no mousepad, luminária (que faz as
-// sombras), caneca, celular, fone no suporte, livros com o pato de borracha,
+// sombras), caneca, celular, um cachorrinho caramelo, livros com o pato de borracha,
 // planta e painéis hexagonais na parede. O caminho da câmera é uma timeline do
 // GSAP controlada pela rolagem (0 = sentado olhando a mesa, 1 = dentro da tela).
 import * as THREE from "three";
@@ -10,9 +10,13 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import gsap from "gsap";
 import * as tx from "./texturas";
+import { criarCachorro } from "./cachorro";
+import { arvoreNatal, epocaDeNatal, gorroNatal, piscaPisca, presente } from "./natal";
+import { idiomaAtual } from "../i18n";
 
 export type Cena = {
   progresso: (p: number) => void;
+  telaViva: (sim: boolean) => void; // o desktop de verdade está por cima da tela: a textura apaga
   ponteiro: (x: number, y: number) => void;
   redimensionar: () => void;
   destruir: () => void;
@@ -54,7 +58,12 @@ function segmento(a: THREE.Vector3, b: THREE.Vector3, raio: number, mat: THREE.M
   return m;
 }
 
-export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean; tela: string }): Cena {
+// aoQuadro recebe, a cada quadro, os 4 cantos (em pixels) da área do monitor onde o desktop
+// de verdade deve aparecer: cima-esquerda, cima-direita, baixo-esquerda, baixo-direita.
+export function criarCena(
+  canvas: HTMLCanvasElement,
+  opcoes: { celular: boolean; tela: string; aoQuadro?: (cantos: number[], progresso: number) => void }
+): Cena {
   const { celular } = opcoes;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, celular ? 1.5 : 2));
@@ -201,12 +210,12 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
   monitor.add(faixaLuz);
 
   // Post-it na borda direita
-  const postItMat = new THREE.MeshStandardMaterial({ map: tx.postIt(), roughness: 0.9 });
+  const postItMat = new THREE.MeshStandardMaterial({ map: tx.postIt(idiomaAtual() === "en"), roughness: 0.9 });
   const postIt = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.05), postItMat);
   // a letra de mão (Caveat) vem do Google Fonts: quando chegar, redesenha o post-it
   document.fonts?.load("600 50px Caveat").then(() => {
     postItMat.map?.dispose();
-    postItMat.map = tx.postIt();
+    postItMat.map = tx.postIt(idiomaAtual() === "en");
     postItMat.needsUpdate = true;
   });
   postIt.position.set(PAINEL.w / 2 + 0.014, -0.11, PAINEL.d / 2 + 0.0012);
@@ -334,38 +343,97 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
   add(new THREE.Mesh(new RoundedBoxGeometry(0.346, 0.0026, 0.276, 2, 0.0012), laranja), false, true, pad).position.y = 0.0013;
   add(new THREE.Mesh(new RoundedBoxGeometry(0.34, 0.0032, 0.27, 2, 0.0015), new THREE.MeshStandardMaterial({ map: tx.mousepad(), roughness: 0.95 })), false, true, pad).position.y = 0.0016;
 
+  // Mouse gamer: casca esculpida (corcova na palma, mais fino na frente), risco dos botões,
+  // roda, botões laterais, faixa RGB na base (no ritmo do teclado) e o cabo até o fundo da mesa
   const mouse = new THREE.Group();
-  mouse.position.set(0.35, MESA_Y + 0.0034, 0.165);
+  mouse.position.set(0.35, MESA_Y + 0.0032, 0.165);
   mouse.rotation.y = -0.14;
   cena.add(mouse);
-  const casca = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2),
-    new THREE.MeshPhysicalMaterial({ color: "#0b0b0d", roughness: 0.35, metalness: 0.1, clearcoat: 0.6, clearcoatRoughness: 0.35 })
-  );
-  casca.scale.set(0.031, 0.022, 0.06);
-  add(casca, true, false, mouse);
-  const saia = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 48), plasticoPreto);
-  saia.scale.set(0.031, 0.003, 0.06);
-  saia.position.y = 0.0015;
-  add(saia, true, false, mouse);
-  const rodinha = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0045, 0.004, 20), new THREE.MeshStandardMaterial({ color: "#2a2b30", roughness: 0.8 }));
-  rodinha.rotation.z = Math.PI / 2;
-  rodinha.position.set(0, 0.0195, -0.024);
-  mouse.add(rodinha);
-  const divisao = new THREE.Mesh(new THREE.BoxGeometry(0.0008, 0.003, 0.03), new THREE.MeshBasicMaterial({ color: "#000" }));
-  divisao.position.set(0, 0.0205, -0.038);
-  divisao.rotation.x = 0.35;
-  mouse.add(divisao);
+  const plasticoMouse = new THREE.MeshPhysicalMaterial({ color: "#141518", roughness: 0.5, metalness: 0.05, clearcoat: 0.2, clearcoatRoughness: 0.6 });
+  // z: -1 = frente (botões) … +1 = trás (palma)
+  const largMouse = (zn: number) => 0.8 + 0.28 * Math.sin(((zn + 1) / 2) * Math.PI * 0.92);
+  const altMouse = (zn: number) => 0.5 + 0.5 * Math.exp(-((((zn + 1) / 2) - 0.64) ** 2) / 0.08);
+  const geoMouse = new THREE.SphereGeometry(1, 72, 44);
+  {
+    const p = geoMouse.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i);
+      const y = p.getY(i);
+      const z = p.getZ(i);
+      const yy = y < 0 ? y * 0.12 : y * altMouse(z);
+      p.setXYZ(i, x * 0.031 * largMouse(z), yy * 0.038 + 0.0042, z * 0.062);
+    }
+    geoMouse.computeVertexNormals();
+  }
+  add(new THREE.Mesh(geoMouse, plasticoMouse), true, false, mouse);
+  // ponto no topo (linha do meio), para colar os detalhes na superfície
+  const topoMouse = (zn: number) => new THREE.Vector3(0, Math.sqrt(Math.max(0, 1 - zn * zn)) * altMouse(zn) * 0.038 + 0.0042, zn * 0.062);
+  const preto = new THREE.MeshBasicMaterial({ color: "#030304" });
+  const risco = new THREE.CatmullRomCurve3([-0.985, -0.9, -0.8, -0.7].map((zn) => topoMouse(zn).add(new THREE.Vector3(0, 0.0002, 0))));
+  mouse.add(new THREE.Mesh(new THREE.TubeGeometry(risco, 16, 0.0005, 6), preto));
+  const risco2 = new THREE.CatmullRomCurve3([-0.48, -0.3, -0.12].map((zn) => topoMouse(zn).add(new THREE.Vector3(0, 0.0002, 0))));
+  mouse.add(new THREE.Mesh(new THREE.TubeGeometry(risco2, 12, 0.0005, 6), preto));
+  // roda de rolagem na fenda
+  const zRoda = -0.6;
+  const pRoda = topoMouse(zRoda);
+  const inclina = Math.atan2(topoMouse(zRoda + 0.05).y - topoMouse(zRoda - 0.05).y, 0.1 * 0.062);
+  const fenda = new THREE.Mesh(new RoundedBoxGeometry(0.0068, 0.004, 0.017, 2, 0.0015), preto);
+  fenda.position.set(0, pRoda.y - 0.0012, pRoda.z);
+  fenda.rotation.x = -inclina;
+  mouse.add(fenda);
+  const roda = new THREE.Mesh(new THREE.CylinderGeometry(0.0062, 0.0062, 0.0046, 32), new THREE.MeshStandardMaterial({ color: "#30323a", roughness: 0.7 }));
+  roda.rotation.z = Math.PI / 2;
+  roda.position.set(0, pRoda.y - 0.0028, pRoda.z);
+  mouse.add(roda);
+  const dpi = new THREE.Mesh(new RoundedBoxGeometry(0.0042, 0.002, 0.0062, 2, 0.0009), new THREE.MeshStandardMaterial({ color: "#2b2d33", roughness: 0.6 }));
+  const pDpi = topoMouse(-0.3);
+  dpi.position.set(0, pDpi.y + 0.0003, pDpi.z);
+  dpi.rotation.x = -Math.atan2(topoMouse(-0.25).y - topoMouse(-0.35).y, 0.1 * 0.062);
+  mouse.add(dpi);
   // dois botões laterais, do lado do polegar
-  for (const z of [-0.012, 0.004]) {
-    const lateral = new THREE.Mesh(new RoundedBoxGeometry(0.003, 0.005, 0.014, 2, 0.001), plasticoPreto);
-    lateral.position.set(-0.0288, 0.0105, z);
+  for (const zn of [-0.25, 0.02]) {
+    const lateral = new THREE.Mesh(new RoundedBoxGeometry(0.0036, 0.0058, 0.0145, 2, 0.0014), plasticoMouse);
+    lateral.position.set(-0.031 * largMouse(zn) * 0.985, 0.0155, zn * 0.062);
+    lateral.rotation.y = -0.06;
     mouse.add(lateral);
   }
-  const logoMouse = new THREE.Mesh(new THREE.CircleGeometry(0.0042, 24), new THREE.MeshBasicMaterial({ color: "#ff8a3d", toneMapped: false }));
-  logoMouse.rotation.x = -Math.PI / 2 + 0.75;
-  logoMouse.position.set(0, 0.0175, 0.028);
+  // faixa RGB em volta da base e o logo na palma
+  const rgbMouse = new THREE.MeshBasicMaterial({ color: "#ff8a3d", toneMapped: false });
+  const contorno: THREE.Vector3[] = [];
+  for (let i = 0; i < 64; i++) {
+    const a = (i / 64) * Math.PI * 2;
+    const zn = Math.sin(a);
+    contorno.push(new THREE.Vector3(Math.cos(a) * 0.031 * largMouse(zn) * 1.012, 0.0047, zn * 0.062 * 1.006));
+  }
+  mouse.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(contorno, true), 128, 0.0008, 6, true), rgbMouse));
+  const pLogo = topoMouse(0.42);
+  const logoMouse = new THREE.Mesh(new THREE.CircleGeometry(0.0042, 3), rgbMouse);
+  logoMouse.position.set(0, pLogo.y + 0.0003, pLogo.z);
+  logoMouse.rotation.set(-Math.PI / 2 - Math.atan2(topoMouse(0.47).y - topoMouse(0.37).y, 0.1 * 0.062), 0, Math.PI / 2);
   mouse.add(logoMouse);
+  // o cabo: sai da frente, passa pelo mousepad e some no fundo da mesa
+  mouse.updateMatrixWorld(true);
+  const frenteMouse = mouse.localToWorld(new THREE.Vector3(0, 0.0068, -0.0622));
+  const naFrente = mouse.localToWorld(new THREE.Vector3(0, 0.0052, -0.075));
+  const yPad = MESA_Y + 0.0032 + 0.0019;
+  const yMesa = MESA_Y + 0.0019;
+  const caboMouse = new THREE.CatmullRomCurve3([
+    frenteMouse,
+    naFrente,
+    new THREE.Vector3(naFrente.x + 0.004, yPad, naFrente.z - 0.028),
+    new THREE.Vector3(naFrente.x + 0.012, yPad, 0.03),
+    new THREE.Vector3(naFrente.x + 0.018, yMesa, -0.012),
+    new THREE.Vector3(0.392, yMesa, -0.12),
+    new THREE.Vector3(0.402, yMesa, -0.25),
+    new THREE.Vector3(0.398, yMesa, -0.355),
+    new THREE.Vector3(0.396, MESA_Y - 0.01, -0.381),
+    new THREE.Vector3(0.394, MESA_Y - 0.26, -0.39),
+  ]);
+  add(new THREE.Mesh(new THREE.TubeGeometry(caboMouse, 260, 0.0019, 8), new THREE.MeshStandardMaterial({ color: "#17181b", roughness: 0.55 })), true, false);
+  const protetor = new THREE.Mesh(new THREE.CylinderGeometry(0.0028, 0.0032, 0.009, 14), plasticoMouse);
+  protetor.position.copy(frenteMouse).lerp(naFrente, 0.35);
+  protetor.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3().subVectors(naFrente, frenteMouse).normalize());
+  add(protetor, true, false);
   sombra(0.09, 0.14, 0.35, 0.17, 0.55);
 
   // ---------------- Caneca ----------------
@@ -407,13 +475,33 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
   }
   sombra(0.11, 0.11, -0.46, 0.06);
 
+  // ---------------- Adesivo na mesa: "Puxa uma cadeira." ----------------
+  const adesivoMat = new THREE.MeshPhysicalMaterial({ map: tx.adesivo(idiomaAtual() === "en"), transparent: true, alphaTest: 0.4, roughness: 0.55, clearcoat: 0.15, clearcoatRoughness: 0.5 });
+  const adesivo = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.1), adesivoMat);
+  adesivo.rotation.set(-Math.PI / 2, 0, 0.1);
+  adesivo.position.set(-0.3, MESA_Y + 0.0006, -0.055);
+  adesivo.receiveShadow = true;
+  cena.add(adesivo);
+  const redesenharAdesivo = () => {
+    adesivoMat.map?.dispose();
+    adesivoMat.map = tx.adesivo(idiomaAtual() === "en");
+    adesivoMat.needsUpdate = true;
+  };
+  // a fonte do título (Unbounded) vem do Google Fonts: quando chegar, redesenha
+  document.fonts?.load("800 96px Unbounded").then(redesenharAdesivo);
+
   // ---------------- Celular ----------------
   const celularMesa = new THREE.Group();
   celularMesa.position.set(-0.33, MESA_Y, 0.19);
   celularMesa.rotation.y = 0.32;
   cena.add(celularMesa);
+  add(new THREE.Mesh(new RoundedBoxGeometry(0.0746, 0.0066, 0.1546, 3, 0.0047), new THREE.MeshStandardMaterial({ color: "#3b3d44", roughness: 0.28, metalness: 0.85 })), true, false, celularMesa).position.y = 0.0036;
   add(new THREE.Mesh(new RoundedBoxGeometry(0.074, 0.0085, 0.154, 3, 0.0045), bezel), true, false, celularMesa).position.y = 0.00425;
-  const telaCel = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.146), new THREE.MeshBasicMaterial({ map: tx.telaCelular(), toneMapped: false }));
+  const telaCelTex = tx.telaCelular();
+  telaCelTex.desenhar(new Date(), idiomaAtual() === "en");
+  document.fonts?.ready.then(() => telaCelTex.desenhar(new Date(), idiomaAtual() === "en"));
+  extras.push(telaCelTex.tex);
+  const telaCel = new THREE.Mesh(new THREE.PlaneGeometry(0.068, 0.146), new THREE.MeshBasicMaterial({ map: telaCelTex.tex, toneMapped: false, transparent: true }));
   telaCel.rotation.x = -Math.PI / 2;
   telaCel.position.y = 0.0087;
   celularMesa.add(telaCel);
@@ -436,15 +524,36 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
   terra.rotation.x = -Math.PI / 2;
   terra.position.y = 0.074;
   planta.add(terra);
-  const folhas = [new THREE.MeshStandardMaterial({ color: "#3f7d4a", roughness: 0.55 }), new THREE.MeshStandardMaterial({ color: "#4f9158", roughness: 0.55 })];
-  for (let i = 0; i < 14; i++) {
-    const f = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 10), folhas[i % 2]);
-    const ang = (i / 14) * Math.PI * 2 + (i % 2) * 0.2;
-    const camada = i % 3 === 0 ? 0.3 : i % 3 === 1 ? 0.55 : 0.8;
-    f.scale.set(0.011, 0.048 + camada * 0.012, 0.021);
-    f.position.set(Math.cos(ang) * 0.04 * camada, 0.105 + camada * 0.018, Math.sin(ang) * 0.04 * camada);
-    f.rotation.set(Math.sin(ang) * (0.4 + camada), 0, -Math.cos(ang) * (0.4 + camada));
-    add(f, true, false, planta);
+  const folhaMat = new THREE.MeshStandardMaterial({ map: tx.folhaEspada(), roughness: 0.55, side: THREE.DoubleSide });
+  let sementeFolha = 21;
+  const rFolha = () => ((sementeFolha = (sementeFolha * 16807) % 2147483647) - 1) / 2147483646;
+  const nFolhas = 9;
+  for (let i = 0; i < nFolhas; i++) {
+    const alto = 0.12 + rFolha() * 0.1;
+    const larg = 0.017 + rFolha() * 0.009;
+    const forma = new THREE.Shape();
+    forma.moveTo(-larg / 2, 0);
+    forma.bezierCurveTo(-larg * 0.62, alto * 0.35, -larg * 0.45, alto * 0.8, 0, alto);
+    forma.bezierCurveTo(larg * 0.45, alto * 0.8, larg * 0.62, alto * 0.35, larg / 2, 0);
+    forma.lineTo(-larg / 2, 0);
+    const geo = new THREE.ShapeGeometry(forma, 16);
+    const pos = geo.attributes.position as THREE.BufferAttribute;
+    const uv = geo.attributes.uv as THREE.BufferAttribute;
+    const curva = 0.015 + rFolha() * 0.03;
+    for (let k = 0; k < pos.count; k++) {
+      const x = pos.getX(k);
+      const y = pos.getY(k);
+      uv.setXY(k, THREE.MathUtils.clamp(x / larg + 0.5, 0, 1), y / alto);
+      // curva para fora e um canal leve no meio da folha
+      pos.setZ(k, curva * (y / alto) ** 2 - Math.abs(x) * 0.25);
+    }
+    geo.computeVertexNormals();
+    const folha = new THREE.Mesh(geo, folhaMat);
+    const ang = (i / nFolhas) * Math.PI * 2 + rFolha() * 0.5;
+    const raio = 0.006 + rFolha() * 0.014;
+    folha.position.set(Math.cos(ang) * raio, 0.07, Math.sin(ang) * raio);
+    folha.rotation.set(0.05 + rFolha() * 0.22, Math.PI / 2 - ang, (rFolha() - 0.5) * 0.12, "YXZ");
+    add(folha, true, false, planta);
   }
   sombra(0.14, 0.14, -0.7, -0.08);
 
@@ -489,54 +598,66 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
   cena.add(lampada, lampada.target);
   sombra(0.15, 0.15, baseLum.x, baseLum.z);
 
-  // ---------------- Fone no suporte ----------------
-  const suporte = new THREE.Group();
-  suporte.position.set(0.62, MESA_Y, -0.17);
-  suporte.rotation.y = -0.45;
-  cena.add(suporte);
-  add(new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.012, 40), metalPreto), true, true, suporte).position.y = 0.006;
-  add(new THREE.Mesh(new THREE.CylinderGeometry(0.0075, 0.0075, 0.25, 16), metalPreto), true, false, suporte).position.y = 0.137;
-  add(new THREE.Mesh(new RoundedBoxGeometry(0.1, 0.012, 0.03, 2, 0.005), metalPreto), true, false, suporte).position.y = 0.266;
-  const fone = new THREE.Group();
-  fone.position.y = 0.272;
-  suporte.add(fone);
-  const couro = new THREE.MeshStandardMaterial({ color: "#151619", roughness: 0.55 });
-  const arco = new THREE.Mesh(new THREE.TorusGeometry(0.082, 0.011, 14, 56, Math.PI), couro);
-  arco.position.y = -0.076;
-  add(arco, true, false, fone);
-  for (const lado of [1, -1]) {
-    const concha = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.03, 40), couro);
-    concha.rotation.z = Math.PI / 2;
-    concha.position.set(lado * 0.088, -0.118, 0);
-    add(concha, true, false, fone);
-    const almofada = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.012, 12, 32), new THREE.MeshStandardMaterial({ color: "#232428", roughness: 0.9 }));
-    almofada.rotation.y = Math.PI / 2;
-    almofada.position.set(lado * 0.068, -0.118, 0);
-    add(almofada, true, false, fone);
-    const anel = new THREE.Mesh(new THREE.TorusGeometry(0.034, 0.0022, 8, 40), new THREE.MeshBasicMaterial({ color: "#ff7a3d", toneMapped: false }));
-    anel.rotation.y = Math.PI / 2;
-    anel.position.set(lado * 0.1035, -0.118, 0);
-    fone.add(anel);
+  // ---------------- Cachorrinho (no lugar do fone) ----------------
+  const natal = epocaDeNatal(); // de novembro até o Dia de Reis
+  const cachorro = criarCachorro(natal);
+  cachorro.grupo.position.set(0.6, MESA_Y, -0.13);
+  cachorro.grupo.rotation.y = -0.55;
+  cachorro.grupo.scale.setScalar(0.88);
+  cena.add(cachorro.grupo);
+  sombra(0.12, 0.14, 0.6, -0.135, 0.5);
+  // luz quente fraquinha para o caramelo aparecer (o canto direito é mais escuro)
+  const luzCachorro = new THREE.PointLight("#ffd3a6", 0.5, 0.6, 2);
+  luzCachorro.position.set(0.5, MESA_Y + 0.22, 0.06);
+  cena.add(luzCachorro);
+
+  // ---------------- Natal: arvorezinha, presentes e pisca-pisca na parede ----------------
+  const arvore = natal ? arvoreNatal() : null;
+  const pisca = natal ? piscaPisca([new THREE.Vector3(-1.22, 1.255, -0.598), new THREE.Vector3(-0.8, 1.232, -0.598), new THREE.Vector3(-0.37, 1.262, -0.598)]) : null;
+  if (arvore && pisca) {
+    arvore.grupo.position.set(0.68, MESA_Y, -0.28);
+    cena.add(arvore.grupo);
+    sombra(0.21, 0.21, 0.68, -0.28, 0.45);
+    for (const [x, z, w, h, d, cor, fita, giro] of [
+      [0.52, -0.3, 0.055, 0.045, 0.05, "#2f6bd4", "#e8c06a", 0.4],
+      [0.49, -0.215, 0.04, 0.032, 0.04, "#d42a35", "#f3f0ea", -0.3],
+      [0.755, -0.15, 0.04, 0.052, 0.04, "#3f8a4f", "#d42a35", 0.2],
+    ] as const) {
+      const caixa = presente(w, h, d, cor, fita);
+      caixa.position.set(x, MESA_Y, z);
+      caixa.rotation.y = giro;
+      cena.add(caixa);
+      sombra(w * 1.7, d * 1.7, x, z, 0.4);
+    }
+    cena.add(pisca.grupo);
   }
-  sombra(0.14, 0.14, 0.62, -0.17);
 
   // ---------------- Livros e o pato de borracha ----------------
   const livros = new THREE.Group();
   livros.position.set(-0.27, MESA_Y, -0.3);
   livros.rotation.y = 0.18;
   cena.add(livros);
-  const paginas = new THREE.MeshStandardMaterial({ color: "#e6dec9", roughness: 0.9 });
+  const paginasMat = new THREE.MeshStandardMaterial({ map: tx.paginas(), roughness: 0.92 });
   let alturaPilha = 0;
   for (const [w, h, d, cor, giro] of [
     [0.2, 0.026, 0.14, "#2f4a6b", 0],
     [0.18, 0.022, 0.13, "#8a3b2f", 0.08],
     [0.19, 0.03, 0.135, "#c9a227", -0.05],
   ] as const) {
-    const capa = new THREE.MeshStandardMaterial({ color: cor, roughness: 0.6 });
-    const livro = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), [paginas, paginas, capa, capa, capa, paginas]);
-    livro.position.y = alturaPilha + h / 2;
+    const livro = new THREE.Group();
+    livro.position.y = alturaPilha;
     livro.rotation.y = giro;
-    add(livro, true, true, livros);
+    livros.add(livro);
+    const capa = new THREE.MeshStandardMaterial({ color: cor, roughness: 0.62 });
+    const e = 0.0021; // espessura da capa
+    for (const y of [e / 2, h - e / 2]) add(new THREE.Mesh(new RoundedBoxGeometry(w, e, d, 2, 0.0009), capa), true, true, livro).position.y = y;
+    const lombada = new THREE.Mesh(new RoundedBoxGeometry(0.006, h, d, 3, 0.0028), capa);
+    lombada.position.set(-w / 2 + 0.003, h / 2, 0);
+    add(lombada, true, true, livro);
+    // miolo de páginas, um pouco recuado das bordas da capa
+    const miolo = new THREE.Mesh(new THREE.BoxGeometry(w - 0.008, h - e * 2, d - 0.006), paginasMat);
+    miolo.position.set(0.001, h / 2, 0);
+    add(miolo, true, true, livro);
     alturaPilha += h;
   }
   const pato = new THREE.Group();
@@ -555,6 +676,13 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
   bico.scale.set(0.009, 0.004, 0.009);
   bico.position.set(0, 0.039, 0.033);
   pato.add(bico);
+  if (natal) {
+    const gorroPato = gorroNatal();
+    gorroPato.scale.setScalar(0.5);
+    gorroPato.position.set(0.002, 0.0548, 0.014);
+    gorroPato.rotation.set(-0.15, 0, -0.3);
+    pato.add(gorroPato);
+  }
   for (const lado of [1, -1]) {
     const olho = new THREE.Mesh(new THREE.SphereGeometry(0.0026, 10, 8), new THREE.MeshBasicMaterial({ color: "#111" }));
     olho.position.set(lado * 0.0075, 0.047, 0.028);
@@ -654,14 +782,64 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
   }
   redimensionar();
 
+  // ---------------- Desktop de verdade em cima da tela ----------------
+  // Projeta na tela os cantos da área do monitor. Em tela de celular (em pé) ou muito larga,
+  // o desktop fica numa faixa no meio do monitor com a mesma proporção da janela.
+  let telaVivaAgora = false;
+  const cantoTmp = new THREE.Vector3();
+  function cantosDesktop(w: number, h: number) {
+    const a = w / Math.max(1, h);
+    let lw = TELA_W;
+    let lh = TELA_H;
+    if (a < 1.3) lw = Math.min(TELA_W, TELA_H * a);
+    else if (a > 2.4) lh = Math.min(TELA_H, TELA_W / a);
+    const out: number[] = [];
+    for (const [x, y] of [
+      [-lw / 2, lh / 2],
+      [lw / 2, lh / 2],
+      [-lw / 2, -lh / 2],
+      [lw / 2, -lh / 2],
+    ]) {
+      cantoTmp.set(x, y, 0);
+      tela.localToWorld(cantoTmp);
+      cantoTmp.project(camera);
+      out.push(((cantoTmp.x + 1) / 2) * w, ((1 - cantoTmp.y) / 2) * h);
+    }
+    return out;
+  }
+
   // ---------------- Animação ----------------
   const cor = new THREE.Color();
   const media = new THREE.Color();
   const comeco = performance.now();
   let raf = 0;
+  let tAnterior = 0;
+  let temPonteiro = false;
+  let ultimoMinuto = Math.floor(Date.now() / 60000);
+  let ultimoIdioma = idiomaAtual();
   const desenhar = () => {
     raf = requestAnimationFrame(desenhar);
     const t = (performance.now() - comeco) / 1000;
+    const dt = Math.min(0.05, t - tAnterior);
+    tAnterior = t;
+
+    // Relógio do celular acompanha o do computador (e o idioma do post-it e da tela)
+    const minuto = Math.floor(Date.now() / 60000);
+    const idioma = idiomaAtual();
+    if (minuto !== ultimoMinuto || idioma !== ultimoIdioma) {
+      telaCelTex.desenhar(new Date(), idioma === "en");
+      if (idioma !== ultimoIdioma) {
+        postItMat.map?.dispose();
+        postItMat.map = tx.postIt(idioma === "en");
+        postItMat.needsUpdate = true;
+        redesenharAdesivo();
+      }
+      ultimoMinuto = minuto;
+      ultimoIdioma = idioma;
+    }
+
+    // Cachorrinho
+    cachorro.animar(t, dt, temPonteiro ? { x: parallax.x, y: parallax.y } : null, camera);
     if (texturaTela && ligada < 1) ligada = Math.min(1, (performance.now() - carregouEm) / 700); // a tela "acende"
 
     // RGB do teclado: uma onda de cor passando da esquerda para a direita
@@ -674,6 +852,9 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
     luzes.instanceColor!.needsUpdate = true;
     media.multiplyScalar(1 / posicoes.length);
     luzRgb.color.copy(media);
+    rgbMouse.color.copy(media).multiplyScalar(1.4);
+    arvore?.animar(t);
+    pisca?.animar(t);
     (brilhoTeclado.material as THREE.MeshBasicMaterial).color.copy(media);
 
     // Painéis da parede "respirando"
@@ -689,7 +870,7 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
     });
 
     // Tela acendendo e iluminando a mesa; o reflexo do vidro some ao chegar perto
-    telaMat.color.setScalar(texturaTela ? ligada : 0.12);
+    telaMat.color.setScalar(telaVivaAgora ? 0.015 : texturaTela ? ligada : 0.12);
     luzTela.intensity = 5 * ligada;
     (reflexo.material as THREE.MeshBasicMaterial).opacity = Math.max(0, 1 - progressoAtual / 0.55);
 
@@ -700,17 +881,23 @@ export function criarCena(canvas: HTMLCanvasElement, opcoes: { celular: boolean;
     camera.position.set(estado.x + parallax.ax * 0.06 * forca, estado.y + parallax.ay * 0.035 * forca, estado.z);
     camera.up.set(estado.ux, estado.uy, estado.uz);
     camera.lookAt(estado.ax, estado.ay, estado.az);
+    camera.updateMatrixWorld();
+    if (opcoes.aoQuadro) opcoes.aoQuadro(cantosDesktop(canvas.clientWidth, canvas.clientHeight), progressoAtual);
     renderer.render(cena, camera);
   };
   desenhar();
 
   return {
     pronto,
+    telaViva(sim) {
+      telaVivaAgora = sim;
+    },
     progresso(p) {
       progressoAtual = p;
       linha?.progress(p);
     },
     ponteiro(x, y) {
+      temPonteiro = true;
       parallax.x = x;
       parallax.y = y;
     },
