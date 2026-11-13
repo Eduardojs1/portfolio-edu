@@ -10,6 +10,7 @@ const Bloco = lazy(() => import("../apps/bloco/Bloco").then((m) => ({ default: m
 
 export type InfoApp = {
   nome: string;
+  nomeEn?: string; // nome em inglês, se for diferente
   Icone: (p: { tamanho?: number }) => React.JSX.Element;
   Componente: ComponentType<{ janela: ControleJanela }>;
   minimo: { w: number; h: number };
@@ -17,6 +18,7 @@ export type InfoApp = {
   inicial: { x: number; y: number; w: number; h: number; maximizada: boolean };
   maximo?: { w: number; h: number }; // em pixels; a janela fica centralizada
   rotulo?: string; // nome na barra de tarefas, se for diferente
+  rotuloEn?: string;
 };
 
 export const ordemApps: AppId[] = ["intellij", "datagrip", "spotify", "navegador", "bloco"];
@@ -46,6 +48,7 @@ export const apps: Record<AppId, InfoApp> = {
   // O portfólio como um site comum, para quem não é da área
   navegador: {
     nome: "Navegador",
+    nomeEn: "Browser",
     Icone: IconeNavegador,
     Componente: Navegador,
     minimo: { w: 480, h: 400 },
@@ -54,7 +57,9 @@ export const apps: Record<AppId, InfoApp> = {
   // O bilhete de boas-vindas (LEIA-ME.txt)
   bloco: {
     nome: "Bloco de notas",
+    nomeEn: "Notepad",
     rotulo: "LEIA-ME.txt - Bloco de notas",
+    rotuloEn: "README.txt - Notepad",
     Icone: IconeBloco,
     Componente: Bloco,
     minimo: { w: 360, h: 320 },
@@ -62,3 +67,7 @@ export const apps: Record<AppId, InfoApp> = {
     maximo: { w: 660, h: 640 },
   },
 };
+
+// Nome do app no idioma escolhido
+export const nomeApp = (id: AppId, en: boolean) => (en && apps[id].nomeEn) || apps[id].nome;
+export const rotuloApp = (id: AppId, en: boolean) => (en ? apps[id].rotuloEn : apps[id].rotulo) ?? nomeApp(id, en);

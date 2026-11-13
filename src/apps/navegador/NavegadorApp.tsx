@@ -4,6 +4,8 @@ import { useSistema } from "../../sistema/contexto";
 import { emitir, ouvir } from "../../sistema/eventos";
 import { Site } from "../../site/Site";
 import { perfil } from "../../dados/perfil";
+import { LogoDev } from "../../sistema/icones";
+import { useT } from "../../i18n";
 import {
   IcAvancar,
   IcCadeado,
@@ -21,6 +23,7 @@ import {
 // não é da área: nada de rodar projeto, é só rolar a página.
 export function NavegadorApp({ janela }: { janela: ControleJanela }) {
   const { celular, abrir } = useSistema();
+  const t = useT();
   const conteudo = useRef<HTMLDivElement>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [dica, setDica] = useState(true);
@@ -48,23 +51,25 @@ export function NavegadorApp({ janela }: { janela: ControleJanela }) {
       <div className="br-abas" data-arrastar>
         <div className="br-aba">
           <span className="br-favicon" aria-hidden="true">
-            {perfil.iniciais}
+            <LogoDev tamanho={16} />
           </span>
-          <span className="br-aba-titulo">{perfil.linha1} | Portfólio</span>
-          <button className="br-aba-fechar" onClick={janela.fechar} aria-label="Fechar aba">
+          <span className="br-aba-titulo">
+            {perfil.linha1} | {t("Portfólio", "Portfolio")}
+          </span>
+          <button className="br-aba-fechar" onClick={janela.fechar} aria-label={t("Fechar aba", "Close tab")}>
             <IcFechar tamanho={10} />
           </button>
         </div>
         <span className="espaco" />
         {!celular && (
           <span className="br-janela" data-nao-arrastar>
-            <button onClick={janela.minimizar} aria-label="Minimizar">
+            <button onClick={janela.minimizar} aria-label={t("Minimizar", "Minimize")}>
               <IcMinimizarJanela />
             </button>
-            <button onClick={janela.alternarMaximizar} aria-label={janela.maximizada ? "Restaurar" : "Maximizar"}>
+            <button onClick={janela.alternarMaximizar} aria-label={janela.maximizada ? t("Restaurar", "Restore") : t("Maximizar", "Maximize")}>
               {janela.maximizada ? <IcRestaurarJanela /> : <IcMaximizarJanela />}
             </button>
-            <button className="fechar" onClick={janela.fechar} aria-label="Fechar">
+            <button className="fechar" onClick={janela.fechar} aria-label={t("Fechar", "Close")}>
               <IcFecharJanela />
             </button>
           </span>
@@ -72,22 +77,22 @@ export function NavegadorApp({ janela }: { janela: ControleJanela }) {
       </div>
 
       <div className="br-barra">
-        <button aria-label="Voltar" disabled>
+        <button aria-label={t("Voltar", "Back")} disabled>
           <IcVoltar />
         </button>
         {!celular && (
-          <button aria-label="Avançar" disabled>
+          <button aria-label={t("Avançar", "Forward")} disabled>
             <IcAvancar />
           </button>
         )}
-        <button aria-label="Recarregar" onClick={() => setRecarga((n) => n + 1)}>
+        <button aria-label={t("Recarregar", "Reload")} onClick={() => setRecarga((n) => n + 1)}>
           <IcRecarregar />
         </button>
         <div className="br-endereco" title={`https://${endereco}/`}>
           <IcCadeado />
           <span>{endereco}</span>
         </div>
-        <button aria-label="Mais opções">
+        <button aria-label={t("Mais opções", "More options")}>
           <IcMais />
         </button>
       </div>
@@ -95,18 +100,18 @@ export function NavegadorApp({ janela }: { janela: ControleJanela }) {
       {dica && (
         <div className="br-dica" role="note">
           <span>
-            Esta é a versão simples do portfólio.{" "}
-            {!celular && "Quer ver como um programador vê? "}
+            {t("Esta é a versão simples do portfólio.", "This is the simple version of the portfolio.")}{" "}
+            {!celular && t("Quer ver como um programador vê? ", "Want to see it the way a developer does? ")}
             <button
               onClick={() => {
                 abrir("intellij");
                 emitir("intellij:site");
               }}
             >
-              Abrir no IntelliJ
+              {t("Abrir no IntelliJ", "Open in IntelliJ")}
             </button>
           </span>
-          <button className="br-dica-fechar" onClick={() => setDica(false)} aria-label="Fechar aviso">
+          <button className="br-dica-fechar" onClick={() => setDica(false)} aria-label={t("Fechar aviso", "Close notice")}>
             <IcFechar tamanho={10} />
           </button>
         </div>

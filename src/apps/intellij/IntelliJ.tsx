@@ -14,6 +14,7 @@ import { BuscaTudo, type AbaBusca, type Acao } from "./BuscaTudo";
 import { MenuSuspenso, type ItemMenu } from "./Menus";
 import { fimProcesso, logApp, logMaven, type Sessao } from "./execucao";
 import { classeTema, mudarTemaIde, temasIde, useTemaIde } from "./tema";
+import { tr, useIdioma } from "../../i18n";
 import {
   JanelaBanco,
   JanelaCommit,
@@ -89,6 +90,7 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
   const sistema = useSistema();
   const celular = sistema.celular;
   const tema = useTemaIde();
+  useIdioma(); // o README e os textos mudam junto com o botão PT/EN
 
   // ---------------- Abas do editor ----------------
   const [abas, setAbas] = useState<string[]>([ID.app, ID.readme]);
@@ -227,8 +229,8 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
       if (querSite.current) {
         abrirSite(ancoraPendente.current ?? undefined);
         if (!lerSinal("guia-aberto"))
-          notificar("Projeto ligado! 🎉", "O site abriu aqui no meio. Role para ver projetos, tecnologias e contato.", [
-            { rotulo: "Abrir o site", acao: () => abrirSite() },
+          notificar(tr("Projeto ligado! 🎉", "Project running! 🎉"), tr("O site abriu aqui no meio. Role para ver projetos, tecnologias e contato.", "The website opened right here. Scroll to see projects, stack and contact."), [
+            { rotulo: tr("Abrir o site", "Open the website"), acao: () => abrirSite() },
           ]);
       } else setAbas((l) => (l.includes(SITE) ? l : [...l, SITE]));
       if (celular) setInferior(null); // no celular o Run cobriria a tela
@@ -361,8 +363,8 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
       { id: "spotify", rotulo: "Abrir o Spotify", acao: () => sistema.abrir("spotify") },
       { id: "readme", rotulo: "Abrir o README", acao: () => abrirArquivo(ID.readme) },
       { id: "sobre", rotulo: "About", acao: () => setSobre(true) },
-      { id: "guia", rotulo: "Guia do portfólio (tour)", acao: () => emitir("sistema:guia", "tour") },
-      { id: "portfolio", rotulo: "Abrir o portfólio no navegador", acao: () => sistema.abrir("navegador") },
+      { id: "guia", rotulo: tr("Guia do portfólio (tour)", "Portfolio guide (tour)"), acao: () => emitir("sistema:guia", "tour") },
+      { id: "portfolio", rotulo: tr("Abrir o portfólio no navegador", "Open the portfolio in the browser"), acao: () => sistema.abrir("navegador") },
     ],
     [rodar, parar, verSite, maven, sistema, abrirArquivo]
   );
@@ -424,8 +426,8 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
       {
         rotulo: "Code",
         sub: [
-          { rotulo: "Reformat Code", atalho: "Ctrl+Alt+L", acao: () => notificar("Reformat Code", "Nada a mudar: o código já estava formatado.") },
-          { rotulo: "Optimize Imports", atalho: "Ctrl+Alt+O", acao: () => notificar("Optimize Imports", "Nenhum import sobrando.") },
+          { rotulo: "Reformat Code", atalho: "Ctrl+Alt+L", acao: () => notificar("Reformat Code", tr("Nada a mudar: o código já estava formatado.", "Nothing to change: the code was already formatted.")) },
+          { rotulo: "Optimize Imports", atalho: "Ctrl+Alt+O", acao: () => notificar("Optimize Imports", tr("Nenhum import sobrando.", "No unused imports.")) },
         ],
       },
       { rotulo: "Refactor", sub: [{ rotulo: "Rename…", atalho: "Shift+F6", desabilitado: true }, { rotulo: "Extract Method…", atalho: "Ctrl+Alt+M", desabilitado: true }] },
@@ -456,8 +458,8 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
         rotulo: "Git",
         sub: [
           { rotulo: "Commit…", atalho: "Ctrl+K", acao: () => setEsquerda("commit") },
-          { rotulo: "Push…", atalho: "Ctrl+Shift+K", acao: () => notificar("Push", `Tudo em dia com origin/${__GIT__.branch}.`) },
-          { rotulo: "Update Project…", atalho: "Ctrl+T", acao: () => notificar("Update Project", "Já está atualizado.") },
+          { rotulo: "Push…", atalho: "Ctrl+Shift+K", acao: () => notificar("Push", tr(`Tudo em dia com origin/${__GIT__.branch}.`, `Everything is up to date with origin/${__GIT__.branch}.`)) },
+          { rotulo: "Update Project…", atalho: "Ctrl+T", acao: () => notificar("Update Project", tr("Já está atualizado.", "Already up to date.")) },
           { separador: true },
           { rotulo: "Show Git Log", atalho: "Alt+9", acao: () => setInferior("git") },
         ],
@@ -495,9 +497,9 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
       { rotulo: "Edit Configurations…", desabilitado: true },
     ],
     vcs: [
-      { rotulo: "Update Project…", atalho: "Ctrl+T", acao: () => notificar("Update Project", "Já está atualizado.") },
+      { rotulo: "Update Project…", atalho: "Ctrl+T", acao: () => notificar("Update Project", tr("Já está atualizado.", "Already up to date.")) },
       { rotulo: "Commit…", atalho: "Ctrl+K", acao: () => setEsquerda("commit") },
-      { rotulo: "Push…", atalho: "Ctrl+Shift+K", acao: () => notificar("Push", `Tudo em dia com origin/${__GIT__.branch}.`) },
+      { rotulo: "Push…", atalho: "Ctrl+Shift+K", acao: () => notificar("Push", tr(`Tudo em dia com origin/${__GIT__.branch}.`, `Everything is up to date with origin/${__GIT__.branch}.`)) },
       { rotulo: "New Branch…", desabilitado: true },
       { separador: true },
       { rotulo: "Local", sub: [{ rotulo: __GIT__.branch, marcado: true }] },
@@ -585,10 +587,10 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
               <span className="ij-widget-texto">{__GIT__.branch}</span>
               <IcChevron />
             </button>
-            <button className="ij-tb" title="Update Project (Ctrl+T)" aria-label="Update Project" onClick={() => notificar("Update Project", "Já está atualizado.")}>
+            <button className="ij-tb" title="Update Project (Ctrl+T)" aria-label="Update Project" onClick={() => notificar("Update Project", tr("Já está atualizado.", "Already up to date."))}>
               <IcAtualizar />
             </button>
-            <button className="ij-tb" title="Push (Ctrl+Shift+K)" aria-label="Push" onClick={() => notificar("Push", `Tudo em dia com origin/${__GIT__.branch}.`)}>
+            <button className="ij-tb" title="Push (Ctrl+Shift+K)" aria-label="Push" onClick={() => notificar("Push", tr(`Tudo em dia com origin/${__GIT__.branch}.`, `Everything is up to date with origin/${__GIT__.branch}.`))}>
               <IcEnviar />
             </button>
           </>
@@ -683,7 +685,7 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
                 <span className="espaco" />
                 {esquerda === "projeto" && (
                   <>
-                    <button className="ij-tw-btn" title="New…" aria-label="Novo" onClick={() => notificar("New File", "Aqui é só leitura. Mas dá para ver tudo! 😄")}>
+                    <button className="ij-tw-btn" title="New…" aria-label="Novo" onClick={() => notificar("New File", tr("Aqui é só leitura. Mas dá para ver tudo! 😄", "This one is read-only. But you can look at everything! 😄"))}>
                       <IcAdicionar />
                     </button>
                     <button className="ij-tw-btn" title="Select Opened File" aria-label="Localizar arquivo aberto" onClick={() => arquivo && abrirArquivo(arquivo.id)}>
@@ -754,7 +756,7 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
                 </div>
                 <div className="ij-editor">
                   {ativa === SITE ? (
-                    <Navegador appRodando={appRodando} ancora={ancoraSite} avisar={(m) => notificar(m, "Já pode colar onde quiser.")} onRodar={() => rodar()} />
+                    <Navegador appRodando={appRodando} ancora={ancoraSite} avisar={(m) => notificar(m, tr("Já pode colar onde quiser.", "Ready to paste anywhere."))} onRodar={() => rodar()} />
                   ) : arquivo?.imagem ? (
                     <ImagemView arquivo={arquivo} />
                   ) : arquivo ? (
@@ -938,7 +940,7 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
               </p>
             )}
           </div>
-          <button className="ij-balao-fechar" onClick={() => setBalao(null)} aria-label="Fechar notificação">
+          <button className="ij-balao-fechar" onClick={() => setBalao(null)} aria-label={tr("Fechar notificação", "Close notification")}>
             <IcFechar tamanho={10} />
           </button>
         </div>
@@ -952,12 +954,13 @@ export function IntelliJ({ janela }: { janela: ControleJanela }) {
               <h2>IntelliJ IDEA 2025.2.4</h2>
               <p className="ij-dialogo-fraco">Build #IU-252.27397.103, built on November 2025</p>
               <p>
-                Esta IDE é de mentirinha: é o portfólio do <strong>{perfil.linha1}</strong>, feito com React, TypeScript, Three.js e GSAP.
+                {tr("Esta IDE é o portfólio do ", "This IDE is the portfolio of ")}
+                <strong>{perfil.linha1}</strong>
+                {tr(", feito com React, TypeScript, Three.js e GSAP.", ", built with React, TypeScript, Three.js and GSAP.")}
               </p>
               <p className="ij-dialogo-fraco">Runtime version: 21.0.5 amd64 · Windows 11</p>
-              <p className="ij-dialogo-fraco">Powered by café, lo-fi e Ctrl+Z.</p>
               <div className="ij-dialogo-botoes">
-                <button onClick={() => { setSobre(false); verSite("contato"); }}>Falar com o Eduardo</button>
+                <button onClick={() => { setSobre(false); verSite("contato"); }}>{tr("Falar com o Eduardo", "Contact Eduardo")}</button>
                 <button className="primario" onClick={() => setSobre(false)}>
                   Close
                 </button>

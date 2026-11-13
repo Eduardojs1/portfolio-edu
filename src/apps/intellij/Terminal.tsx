@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { perfil } from "../../dados/perfil";
+import { links, perfil } from "../../dados/perfil";
 import { projetos } from "../../dados/projetos";
 import { normalizar } from "../../util";
 import { arquivos, CAMINHO_PROJETO, NOME_PROJETO } from "./projeto";
@@ -143,7 +143,7 @@ export function Terminal({ appRodando, onAbrir, onMaven, onRodar, onApp, onFecha
         } else if (url.includes("/api/projetos"))
           out(JSON.stringify(projetos.map((p, i) => ({ id: i + 1, nome: p.nome, tipo: p.rotulo, stack: p.stack }))));
         else if (url.includes("/api/contato"))
-          out(JSON.stringify({ email: perfil.email, whatsapp: perfil.whatsapp.exibir, github: `github.com/${perfil.github}`, linkedin: `in/${perfil.linkedin}` }));
+          out(JSON.stringify({ email: perfil.email, linkedin: links.linkedin }));
         else if (url) out(`<!DOCTYPE html><html lang="pt-BR"><head><title>${perfil.linha1}</title>…`);
         else erro("uso: curl localhost:8080/api/projetos");
         break;

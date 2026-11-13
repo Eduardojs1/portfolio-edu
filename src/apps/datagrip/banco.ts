@@ -1,6 +1,6 @@
 // O banco "portfolio" que o DataGrip mostra: as mesmas tabelas das migrations do projeto,
 // preenchidas com os dados de src/dados.
-import { perfil } from "../../dados/perfil";
+import { links, perfil } from "../../dados/perfil";
 import { projetos } from "../../dados/projetos";
 import { estudando, stack } from "../../dados/stack";
 
@@ -49,9 +49,7 @@ export const tabelas: Tabela[] = [
     ],
     linhas: [
       ["email", perfil.email],
-      ["whatsapp", perfil.whatsapp.exibir],
-      ["github", `github.com/${perfil.github}`],
-      ["linkedin", `in/${perfil.linkedin}`],
+      ["linkedin", links.linkedin],
     ],
   },
 ];

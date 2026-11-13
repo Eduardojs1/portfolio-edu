@@ -89,7 +89,17 @@
 
 /* Markdown e imagem */
 .ij.claro .md code { background: #eff1f3; }
-.ij.claro .md .md-retrato { filter: invert(1) contrast(1.15); mix-blend-mode: multiply; }
+/* No claro, o retrato (rabisco claro no fundo preto) vira uma foto redonda, como um avatar */
+.ij.claro .md .md-retrato {
+  width: 184px;
+  margin: 4px 0 8px 24px;
+  border-radius: 50%;
+  filter: brightness(1.15) contrast(1.05);
+  mix-blend-mode: normal;
+  -webkit-mask-image: none;
+  mask-image: none;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
 .ij.claro .img-area { background: conic-gradient(#ffffff 25%, #f0f1f3 0 50%, #ffffff 0 75%, #f0f1f3 0) 0 0 / 16px 16px; }
 .ij.claro .ij-vazio dt { color: #6c707e; }
 .ij.claro .ij-vazio dd { color: #000; }

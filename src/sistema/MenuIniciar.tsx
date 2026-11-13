@@ -3,11 +3,11 @@ import type { AppId } from "./contexto";
 import { emitir } from "./eventos";
 import { links, perfil } from "../dados/perfil";
 import { normalizar } from "../util";
+import { useT } from "../i18n";
 import {
   IconeDataGrip,
   IconeDesligar,
   IconeEmailApp,
-  IconeGithubApp,
   IconeBloco,
   IconeGuia,
   IconeIntelliJ,
@@ -17,8 +17,7 @@ import {
   IconeReiniciar,
   IconeSiteApp,
   IconeSpotify,
-  IconeWhatsappApp,
-  LogoED,
+  LogoDev,
 } from "./icones";
 
 type Item = { nome: string; detalhe?: string; Icone: (p: { tamanho?: number }) => React.JSX.Element; acao: () => void };
@@ -34,6 +33,7 @@ export const README = "README.md";
 export const SERVICO_PROJETOS = "src/main/java/dev/eduardo/portfolio/service/ProjetoService.java";
 
 export function MenuIniciar({ focarBusca, onAbrir, onFechar, onDesligar }: Props) {
+  const t = useT();
   const [busca, setBusca] = useState("");
   const [energia, setEnergia] = useState(false);
   const campo = useRef<HTMLInputElement>(null);
@@ -51,30 +51,28 @@ export function MenuIniciar({ focarBusca, onAbrir, onFechar, onDesligar }: Props
 
   const fixados: Item[] = useMemo(
     () => [
-      { nome: "Portfólio", detalhe: "No navegador, como um site", Icone: IconeNavegador, acao: () => onAbrir("navegador") },
-      { nome: "LEIA-ME.txt", detalhe: "Comece por aqui", Icone: IconeBloco, acao: () => onAbrir("bloco") },
+      { nome: t("Portfólio", "Portfolio"), detalhe: t("No navegador, como um site", "In the browser, as a website"), Icone: IconeNavegador, acao: () => onAbrir("navegador") },
+      { nome: t("LEIA-ME.txt", "README.txt"), detalhe: t("Comece por aqui", "Start here"), Icone: IconeBloco, acao: () => onAbrir("bloco") },
       { nome: "IntelliJ IDEA", Icone: IconeIntelliJ, acao: () => onAbrir("intellij") },
       { nome: "DataGrip", Icone: IconeDataGrip, acao: () => onAbrir("datagrip") },
       { nome: "Spotify", Icone: IconeSpotify, acao: () => onAbrir("spotify") },
       { nome: "Site", detalhe: "localhost:8080", Icone: IconeSiteApp, acao: noIntelliJ("intellij:site") },
-      { nome: "GitHub", Icone: IconeGithubApp, acao: site(links.github) },
       { nome: "LinkedIn", Icone: IconeLinkedinApp, acao: site(links.linkedin) },
-      { nome: "WhatsApp", Icone: IconeWhatsappApp, acao: site(links.whatsapp) },
-      { nome: "E-mail", Icone: IconeEmailApp, acao: () => (location.href = links.email) },
+      { nome: "E-mail", detalhe: perfil.email, Icone: IconeEmailApp, acao: () => (location.href = links.email) },
     ],
-    []
+    [t.idioma]
   );
 
   const recomendados: Item[] = useMemo(
     () => [
-      { nome: "Tour guiado", detalhe: "Te mostro cada programa", Icone: IconeGuia, acao: () => emitir("sistema:guia", "tour") },
-      { nome: "README.md", detalhe: "Quem sou e como navegar", Icone: IconeIntelliJ, acao: noIntelliJ("intellij:abrir", README) },
-      { nome: "Rodar o portfólio", detalhe: "PortfolioApplication · Shift+F10", Icone: IconeIntelliJ, acao: noIntelliJ("intellij:rodar") },
-      { nome: "ProjetoService.java", detalhe: "Os projetos, em código", Icone: IconeIntelliJ, acao: noIntelliJ("intellij:abrir", SERVICO_PROJETOS) },
-      { nome: "SELECT * FROM projetos", detalhe: "No DataGrip", Icone: IconeDataGrip, acao: () => onAbrir("datagrip") },
-      { nome: "Músicas pra codar", detalhe: "Playlist no Spotify", Icone: IconeSpotify, acao: () => { onAbrir("spotify"); emitir("spotify:tocar"); } },
+      { nome: t("Tour guiado", "Guided tour"), detalhe: t("Te mostro cada programa", "I'll show you each app"), Icone: IconeGuia, acao: () => emitir("sistema:guia", "tour") },
+      { nome: "README.md", detalhe: t("Quem sou e como navegar", "Who I am and how to get around"), Icone: IconeIntelliJ, acao: noIntelliJ("intellij:abrir", README) },
+      { nome: t("Rodar o portfólio", "Run the portfolio"), detalhe: "PortfolioApplication · Shift+F10", Icone: IconeIntelliJ, acao: noIntelliJ("intellij:rodar") },
+      { nome: "ProjetoService.java", detalhe: t("Os projetos, em código", "The projects, as code"), Icone: IconeIntelliJ, acao: noIntelliJ("intellij:abrir", SERVICO_PROJETOS) },
+      { nome: "SELECT * FROM projetos", detalhe: t("No DataGrip", "In DataGrip"), Icone: IconeDataGrip, acao: () => onAbrir("datagrip") },
+      { nome: t("Músicas pra codar", "Coding music"), detalhe: t("Playlist no Spotify", "Spotify playlist"), Icone: IconeSpotify, acao: () => { onAbrir("spotify"); emitir("spotify:tocar"); } },
     ],
-    []
+    [t.idioma]
   );
 
   useEffect(() => {
@@ -103,7 +101,7 @@ export function MenuIniciar({ focarBusca, onAbrir, onFechar, onDesligar }: Props
     : null;
 
   return (
-    <div className="menu-iniciar" ref={caixa} role="dialog" aria-label="Menu Iniciar">
+    <div className="menu-iniciar" ref={caixa} role="dialog" aria-label={t("Menu Iniciar", "Start menu")}>
       <label className="mi-busca">
         <IconeLupa tamanho={16} />
         <input
@@ -113,14 +111,14 @@ export function MenuIniciar({ focarBusca, onAbrir, onFechar, onDesligar }: Props
           onKeyDown={(e) => {
             if (e.key === "Enter" && resultados?.[0]) fazer(resultados[0].acao)();
           }}
-          placeholder="Pesquisar aplicativos, arquivos e atalhos"
-          aria-label="Pesquisar"
+          placeholder={t("Pesquisar aplicativos, arquivos e atalhos", "Search for apps, files and shortcuts")}
+          aria-label={t("Pesquisar", "Search")}
         />
       </label>
 
       {resultados ? (
         <div className="mi-secao">
-          <h2 className="mi-titulo">Resultados</h2>
+          <h2 className="mi-titulo">{t("Resultados", "Results")}</h2>
           {resultados.length ? (
             <ul className="mi-lista">
               {resultados.map((i) => (
@@ -136,13 +134,13 @@ export function MenuIniciar({ focarBusca, onAbrir, onFechar, onDesligar }: Props
               ))}
             </ul>
           ) : (
-            <p className="mi-vazio">Nada encontrado para "{busca}".</p>
+            <p className="mi-vazio">{t("Nada encontrado para", "Nothing found for")} "{busca}".</p>
           )}
         </div>
       ) : (
         <>
           <div className="mi-secao">
-            <h2 className="mi-titulo">Fixado</h2>
+            <h2 className="mi-titulo">{t("Fixado", "Pinned")}</h2>
             <ul className="mi-grade">
               {fixados.map((i) => (
                 <li key={i.nome}>
@@ -155,7 +153,7 @@ export function MenuIniciar({ focarBusca, onAbrir, onFechar, onDesligar }: Props
             </ul>
           </div>
           <div className="mi-secao">
-            <h2 className="mi-titulo">Recomendado</h2>
+            <h2 className="mi-titulo">{t("Recomendado", "Recommended")}</h2>
             <ul className="mi-lista mi-lista-2">
               {recomendados.map((i) => (
                 <li key={i.nome}>
@@ -175,26 +173,26 @@ export function MenuIniciar({ focarBusca, onAbrir, onFechar, onDesligar }: Props
 
       <div className="mi-rodape">
         <span className="mi-usuario">
-          <LogoED tamanho={30} />
-          {perfil.nome}
+          <LogoDev tamanho={30} />
+          {perfil.linha1}
         </span>
         <div className="mi-energia">
           {energia && (
             <div className="mi-energia-menu" role="menu">
               <button role="menuitem" onClick={fazer(onDesligar)}>
-                <IconeDesligar /> Desligar
+                <IconeDesligar /> {t("Desligar", "Shut down")}
               </button>
               <button role="menuitem" onClick={() => location.reload()}>
-                <IconeReiniciar /> Reiniciar
+                <IconeReiniciar /> {t("Reiniciar", "Restart")}
               </button>
             </div>
           )}
           <button
             className="mi-energia-botao"
             onClick={() => setEnergia((v) => !v)}
-            aria-label="Energia"
+            aria-label={t("Energia", "Power")}
             aria-expanded={energia}
-            title="Energia"
+            title={t("Energia", "Power")}
           >
             <IconeDesligar tamanho={18} />
           </button>

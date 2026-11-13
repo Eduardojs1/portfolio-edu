@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Site } from "../../site/Site";
-import { perfil } from "../../dados/perfil";
+import { links, perfil } from "../../dados/perfil";
 import { projetos } from "../../dados/projetos";
 import { IcAbrirFora, IcAvancar, IcCadeado, IcRecarregar, IcVoltar } from "./icones";
 
@@ -28,9 +28,7 @@ function json(rota: string) {
   if (rota === "/api/contato")
     return {
       email: perfil.email,
-      whatsapp: perfil.whatsapp.exibir,
-      github: `github.com/${perfil.github}`,
-      linkedin: `in/${perfil.linkedin}`,
+      linkedin: links.linkedin,
     };
   return null;
 }

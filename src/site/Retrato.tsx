@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { reduzMovimento } from "../util";
 import { perfil } from "../dados/perfil";
+import { useT } from "../i18n";
 
 // Retrato feito de partículas: cada ponto sai de um pixel claro da foto.
 // Elas se montam quando o retrato aparece, fogem do mouse e voltam.
@@ -11,6 +12,7 @@ const AMOSTRA = 240; // a foto é lida nesta resolução
 const NIVEIS = 5; // tons de cinza (um fillStyle por tom, mais rápido de desenhar)
 
 export function Retrato() {
+  const t = useT();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -256,8 +258,8 @@ export function Retrato() {
     <figure className="retrato">
       <canvas ref={canvasRef} role="img" aria-label={`Retrato do ${perfil.nome} feito de partículas`} />
       <figcaption className="retrato-dica" aria-hidden="true">
-        <span className="so-mouse">// passe o mouse · clique para espalhar</span>
-        <span className="so-toque">// toque no retrato</span>
+        <span className="so-mouse">{t("passe o mouse · clique para espalhar", "hover · click to scatter")}</span>
+        <span className="so-toque">{t("toque no retrato", "tap the portrait")}</span>
       </figcaption>
     </figure>
   );

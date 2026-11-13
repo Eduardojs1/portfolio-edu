@@ -62,3 +62,23 @@ body.arrastando-v { cursor: row-resize; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
 }
+
+/* Botão PT | EN */
+.troca-idioma { display: inline-flex; flex: none; padding: 2px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; background: rgba(0, 0, 0, 0.2); }
+.troca-idioma button {
+  min-width: 34px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-family: var(--f-ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #8b8f97;
+  transition: background-color 0.15s, color 0.15s;
+}
+.troca-idioma button:hover { color: #fff; }
+.troca-idioma button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+/* Texto só para leitor de tela */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

@@ -1,6 +1,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Sistema, type AppId, type ControleJanela } from "./contexto";
-import { apps, ordemApps } from "./apps";
+import { apps, nomeApp, ordemApps } from "./apps";
+import { useT } from "../i18n";
 import { Janela, type EstadoJanela } from "./Janela";
 import { BarraTarefas } from "./BarraTarefas";
 import { MenuIniciar } from "./MenuIniciar";
@@ -43,11 +44,13 @@ type Props = { ativo: boolean; onDesligar: () => void };
 
 export function Desktop({ ativo, onDesligar }: Props) {
   const celular = useMedia("(max-width: 900px)");
+  const t = useT();
+  const en = t.idioma === "en";
   const [janelas, setJanelas] = useState<Record<AppId, EstadoJanela>>(() => ({
     intellij: geometria("intellij"),
     datagrip: geometria("datagrip"),
     spotify: geometria("spotify"),
-    navegador: { ...geometria("navegador"), aberta: false }, // só abre quando alguém pede
+    navegador: geometria("navegador"), // aberto e minimizado na barra, como os outros
     bloco: { ...geometria("bloco"), aberta: false },
   }));
   const zTopo = useRef(10);
@@ -138,7 +141,7 @@ export function Desktop({ ativo, onDesligar }: Props) {
     () => [
       {
         alvo: ".bt-centro",
-        texto: "esses são os programas que eu uso todo dia. vou te mostrar um por um.",
+        texto: t("esses são os programas que eu uso todo dia. vou te mostrar um por um.", "these are the apps I use every day. let me show you each one."),
       },
       {
         alvo: '[data-guia="site"]',
@@ -146,29 +149,41 @@ export function Desktop({ ativo, onDesligar }: Props) {
           abrir("intellij");
           emitir("intellij:site");
         },
-        texto: "esse é o meu portfólio, já rodando dentro do intellij. rola a página pra ver os projetos e o contato.",
+        texto: t(
+          "esse é o meu portfólio, já rodando dentro do intellij. rola a página pra ver os projetos e o contato.",
+          "this is my portfolio, already running inside intellij. scroll down to see the projects and how to reach me."
+        ),
       },
       {
         alvo: '[data-guia="arvore"]',
         antes: () => abrir("intellij"),
-        texto: "intellij: é onde eu programo. aqui do lado ficam os arquivos do portfólio, que é um projeto java de verdade.",
+        texto: t(
+          "intellij: é onde eu programo. aqui do lado ficam os arquivos do portfólio, que é um projeto java de verdade.",
+          "intellij: where I code. the portfolio files are right here, and it's a real java project."
+        ),
       },
       {
         alvo: '[data-guia="rodar"]',
         antes: () => abrir("intellij"),
-        texto: "esse ▶ verde liga o projeto. já deixei ligado pra você, mas dá pra ver ele subindo de novo.",
-        acao: { rotulo: "religar", fazer: () => emitir("intellij:rodar") },
+        texto: t(
+          "esse ▶ verde liga o projeto. já deixei ligado pra você, mas dá pra ver ele subindo de novo.",
+          "this green ▶ starts the project. it's already running for you, but you can watch it boot again."
+        ),
+        acao: { rotulo: t("religar", "restart"), fazer: () => emitir("intellij:rodar") },
       },
       {
-        alvo: '.bt-app[aria-label="DataGrip"]',
-        texto: "datagrip: o banco de dados. meus projetos tão guardados em tabelas aqui.",
-        acao: { rotulo: "abrir", fazer: () => abrir("datagrip") },
+        alvo: '.bt-app[data-app="datagrip"]',
+        texto: t("datagrip: o banco de dados. meus projetos tão guardados em tabelas aqui.", "datagrip: the database. my projects are stored in tables here."),
+        acao: { rotulo: t("abrir", "open"), fazer: () => abrir("datagrip") },
       },
       {
-        alvo: '.bt-app[aria-label="Spotify"]',
-        texto: "spotify: o que eu ouço programando. tem tarcísio do acordeon e um lo-fi que é gerado na hora.",
+        alvo: '.bt-app[data-app="spotify"]',
+        texto: t(
+          "spotify: o que eu ouço programando. tem tarcísio do acordeon e um lo-fi que é gerado na hora.",
+          "spotify: what I listen to while coding. there's tarcísio do acordeon and a lo-fi that's generated live."
+        ),
         acao: {
-          rotulo: "tocar o lo-fi",
+          rotulo: t("tocar o lo-fi", "play the lo-fi"),
           fazer: () => {
             abrir("spotify");
             emitir("spotify:tocar");
@@ -176,21 +191,21 @@ export function Desktop({ ativo, onDesligar }: Props) {
         },
       },
       {
-        alvo: '.bt-app[aria-label="Navegador"]',
-        texto: "prefere o jeito normal? aqui o portfólio abre como um site comum.",
-        acao: { rotulo: "abrir", fazer: () => abrir("navegador") },
+        alvo: '.bt-app[data-app="navegador"]',
+        texto: t("prefere o jeito normal? aqui o portfólio abre como um site comum.", "prefer the usual way? here the portfolio opens as a regular website."),
+        acao: { rotulo: t("abrir", "open"), fazer: () => abrir("navegador") },
       },
       {
         alvo: ".bt-iniciar",
-        texto: "pra falar comigo: whatsapp, linkedin e e-mail ficam nesse menu.",
-        acao: { rotulo: "abrir o menu", fazer: () => setMenu({ busca: false }) },
+        texto: t("pra falar comigo: e-mail e linkedin ficam nesse menu.", "to reach me: e-mail and linkedin are in this menu."),
+        acao: { rotulo: t("abrir o menu", "open the menu"), fazer: () => setMenu({ busca: false }) },
       },
       {
         alvo: '[data-guia="guia"]',
-        texto: "é isso! se precisar, o bilhete fica aqui. valeu pela visita! — edu",
+        texto: t("é isso! se precisar, o bilhete fica aqui. valeu pela visita! — edu", "that's it! if you need it, the note stays here. thanks for stopping by! — edu"),
       },
     ],
-    [abrir]
+    [abrir, t.idioma]
   );
 
   const controle = (app: AppId): ControleJanela => ({
@@ -210,9 +225,10 @@ export function Desktop({ ativo, onDesligar }: Props) {
         <div className="papel-parede" aria-hidden="true" onPointerDown={() => setSelecionado(null)} />
 
         {!celular && (
-          <ul className="icones-desktop" aria-label="Área de trabalho">
+          <ul className="icones-desktop" aria-label={t("Área de trabalho", "Desktop")}>
             {ordemApps.filter((id) => id !== "bloco").map((id) => {
-              const { nome, Icone } = apps[id];
+              const { Icone } = apps[id];
+              const nome = nomeApp(id, en);
               return (
                 <li key={id}>
                   <button
@@ -235,13 +251,13 @@ export function Desktop({ ativo, onDesligar }: Props) {
                 onKeyDown={(e) => e.key === "Enter" && abrir("bloco")}
               >
                 <IconeBloco tamanho={40} />
-                <span>LEIA-ME.txt</span>
+                <span>{t("LEIA-ME.txt", "README.txt")}</span>
               </button>
             </li>
             <li>
               <button className={selecionado === "lixeira" ? "sel" : ""} onClick={() => setSelecionado("lixeira")}>
                 <IconeLixeira />
-                <span>Lixeira</span>
+                <span>{t("Lixeira", "Recycle Bin")}</span>
               </button>
             </li>
           </ul>
@@ -250,7 +266,8 @@ export function Desktop({ ativo, onDesligar }: Props) {
         {ordemApps.map((id) => {
           const e = janelas[id];
           if (!e.aberta) return null;
-          const { nome, Componente, minimo } = apps[id];
+          const { Componente, minimo } = apps[id];
+          const nome = nomeApp(id, en);
           return (
             <Janela
               key={id}
@@ -263,7 +280,7 @@ export function Desktop({ ativo, onDesligar }: Props) {
               onMudar={(m) => mudar(id, m)}
               onAlternarMaximizar={() => mudar(id, { maximizada: !e.maximizada })}
             >
-              <Suspense fallback={<div className="janela-carregando">Abrindo {nome}…</div>}>
+              <Suspense fallback={<div className="janela-carregando">{t("Abrindo", "Opening")} {nome}…</div>}>
                 <Componente janela={controle(id)} />
               </Suspense>
             </Janela>

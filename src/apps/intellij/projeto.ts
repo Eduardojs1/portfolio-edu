@@ -1,10 +1,11 @@
 // O "projeto" aberto no IntelliJ: um Spring Boot de verdade, em que cada arquivo
 // conta uma parte do portfólio. O conteúdo sai de src/dados, então trocar um dado
 // muda o código, o banco do DataGrip e o site ao mesmo tempo.
-import { perfil } from "../../dados/perfil";
+import { links, perfil, periodo } from "../../dados/perfil";
 import { projetos } from "../../dados/projetos";
 import { estudando, stack } from "../../dados/stack";
-import { frentes, textoSobre } from "../../dados/sobre";
+import { frentes, textoSobre, textoSobreEn } from "../../dados/sobre";
+import { idiomaAtual } from "../../i18n";
 import { juntar, quebrar } from "../../util";
 import type { TipoIcone } from "./icones";
 
@@ -104,8 +105,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "portfolio.contato")
 public record ContatoProperties(
         String email,
-        String whatsapp,
-        String github,
         String linkedin
 ) {
 }
@@ -432,9 +431,7 @@ ${perfil.formacao.map((f) => `    (${sqlTexto(f.curso)}, ${sqlTexto(f.onde)})`).
 
 INSERT INTO contato (canal, valor)
 VALUES ('email', ${sqlTexto(perfil.email)}),
-       ('whatsapp', ${sqlTexto(perfil.whatsapp.exibir)}),
-       ('github', ${sqlTexto(`github.com/${perfil.github}`)}),
-       ('linkedin', ${sqlTexto(`in/${perfil.linkedin}`)});
+       ('linkedin', ${sqlTexto(links.linkedin)});
 `;
 
 const applicationYml = `server:
@@ -456,9 +453,7 @@ spring:
 portfolio:
   contato:
     email: ${perfil.email}
-    whatsapp: "${perfil.whatsapp.exibir}"
-    github: github.com/${perfil.github}
-    linkedin: in/${perfil.linkedin}
+    linkedin: ${links.linkedin}
 `;
 
 const indexHtml = `<!DOCTYPE html>
@@ -654,9 +649,53 @@ const ideaVcs = `<?xml version="1.0" encoding="UTF-8"?>
 </project>
 `;
 
-// README: a primeira coisa que abre. Links com "acao:", "abrir:", "app:" e "site:"
-// viram ações no preview (ver Markdown.tsx).
-const readme = `# ${perfil.linha1}
+// README: a primeira coisa que abre (em português ou inglês, conforme o botão PT/EN).
+// Links com "acao:", "abrir:", "app:" e "site:" viram ações no preview (ver Markdown.tsx).
+const readme = (en: boolean) => en
+  ? `# ${perfil.linha1}
+
+![Portrait of ${perfil.nome}](/img/eduardo.webp "retrato")
+
+**${perfil.linha2}** · Java, Spring Boot, React and Discord bots
+
+${textoSobreEn}
+
+## Where to start
+
+To get to know me, pick one below:
+
+| I want to... | Click |
+| --- | --- |
+| See my projects, who I am and how to reach me | [Open the website](site) |
+| See the portfolio as a regular website | [Open in the browser](app:navegador) |
+| Get to know each app, step by step | [Take the guided tour](acao:guia) |
+| Talk to me | [Contact](site:contato) |
+| See the projects as code | [ProjetoService.java](abrir:${ID.servico}) |
+| See the projects in the database | [Open in DataGrip](app:datagrip) |
+| Listen to what I listen to while coding | [Open Spotify](app:spotify) |
+
+## Projects
+
+${projetos.map((p) => `- **${p.nome}** · ${p.en.rotulo}. ${p.en.resumo} [See on the website](site:projeto-${p.id})`).join("\n")}
+
+## Stack
+
+${stack.map((g) => `**${g.nomeEn}:** ${g.itens.map((t) => `\`${t}\``).join(" ")}`).join("\n\n")}
+
+## Career
+
+${perfil.experiencia.map((x) => `- **${x.cargoEn}** · ${x.empresa} (${periodo(x.inicio, x.fim, "en")})`).join("\n")}
+
+## Contact
+
+- E-mail: [${perfil.email}](mailto:${perfil.email})
+- LinkedIn: [${perfil.linha1}](${links.linkedin})
+
+---
+
+> Tip: press \`Shift\` twice to search for any file or action.
+`
+  : `# ${perfil.linha1}
 
 ![Retrato do ${perfil.nome}](/img/eduardo.webp "retrato")
 
@@ -684,14 +723,16 @@ ${projetos.map((p) => `- **${p.nome}** · ${p.rotulo}. ${p.resumo} [Ver no site]
 
 ## Stack
 
-${stack.map((g) => `**${g.grupo.replace(/_/g, " ").toLowerCase()}:** ${g.itens.map((t) => `\`${t}\``).join(" ")}`).join("\n\n")}
+${stack.map((g) => `**${g.nome}:** ${g.itens.map((t) => `\`${t}\``).join(" ")}`).join("\n\n")}
+
+## Carreira
+
+${perfil.experiencia.map((x) => `- **${x.cargo}** · ${x.empresa} (${periodo(x.inicio, x.fim, "pt")})`).join("\n")}
 
 ## Contato
 
 - E-mail: [${perfil.email}](mailto:${perfil.email})
-- WhatsApp: [${perfil.whatsapp.exibir}](https://wa.me/${perfil.whatsapp.numero})
-- GitHub: [github.com/${perfil.github}](https://github.com/${perfil.github})
-- LinkedIn: [in/${perfil.linkedin}](https://www.linkedin.com/in/${perfil.linkedin})
+- LinkedIn: [${perfil.linha1}](${links.linkedin})
 
 ---
 
@@ -736,7 +777,7 @@ export const arquivos: Arquivo[] = [
   { id: "mvnw", nome: "mvnw", icone: "shell", ling: "shell", texto: mvnw },
   { id: "mvnw.cmd", nome: "mvnw.cmd", icone: "cmd", ling: "shell", texto: mvnwCmd },
   { id: ID.pom, nome: "pom.xml", icone: "maven", ling: "xml", texto: pom },
-  { id: ID.readme, nome: "README.md", icone: "md", ling: "md", texto: readme },
+  { id: ID.readme, nome: "README.md", icone: "md", ling: "md", get texto() { return readme(idiomaAtual() === "en"); } },
 ];
 
 const porId = new Map(arquivos.map((a) => [a.id, a]));

@@ -118,8 +118,8 @@ export function IconeGuia({ tamanho = 24 }: P) {
   );
 }
 
-// "ED": o logo do portfólio, usado no botão Iniciar e no avatar
-export function LogoED({ tamanho = 24 }: P) {
+// "</>": o logo do portfólio (ícone de código), usado no site, no botão Iniciar e no avatar
+export function LogoDev({ tamanho = 24 }: P) {
   const id = useId();
   return (
     <svg viewBox="0 0 64 64" width={tamanho} height={tamanho} aria-hidden="true">
@@ -130,17 +130,11 @@ export function LogoED({ tamanho = 24 }: P) {
         </linearGradient>
       </defs>
       <rect width="64" height="64" rx="16" fill={`url(#${id})`} />
-      <text
-        x="32"
-        y="42"
-        textAnchor="middle"
-        fontFamily="Inter, Segoe UI, sans-serif"
-        fontWeight="800"
-        fontSize="26"
-        fill="#1e1f22"
-      >
-        ED
-      </text>
+      <g fill="none" stroke="#1e1f22" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M23 21 12.5 32 23 43" />
+        <path d="M41 21 51.5 32 41 43" />
+        <path d="M35.5 16.5 28.5 47.5" strokeWidth="4.4" />
+      </g>
     </svg>
   );
 }
