@@ -123,3 +123,33 @@
 .dg-numero { color: #2aacb8 !important; text-align: right !important; }
 .dg-bool { color: #cf8e6d !important; }
 .dg-status-conexao { display: flex; align-items: center; gap: 6px; }
+
+/* Botões que agora fazem alguma coisa */
+button.dg-chip { cursor: pointer; }
+button.dg-chip:hover { background: var(--ij-hover); color: var(--ij-texto); }
+.dg-filtro input {
+  width: 22ch;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  font: inherit;
+  color: var(--ij-texto);
+}
+.dg-filtro input::placeholder { color: var(--ij-texto-3); }
+.dg-filtro:focus-within { box-shadow: inset 0 0 0 1px var(--ij-azul); }
+.ij-editor > .dg-saida-erro { flex: 1; margin: 0; padding: 14px 16px; }
+.ij-tw-btn.girando svg { animation: girar 0.8s linear infinite; }
+.dg-problemas {
+  position: absolute;
+  left: 41px;
+  right: 0;
+  bottom: 24px;
+  z-index: 30;
+  height: 150px;
+  border-top: 1px solid var(--ij-borda);
+  background: var(--ij-fundo);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+}
+.dg-problemas .tw-problemas-ok { padding: 6px 14px; }
+.ij.celular .dg-problemas { left: 0; }
