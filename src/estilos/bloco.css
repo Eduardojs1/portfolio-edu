@@ -68,8 +68,6 @@
   background: #f3f3f3;
   animation: piscar-cursor 1s steps(1) infinite;
 }
-.bn-rodape-texto { color: #a8a8a8; }
-.bn-rodape-texto .bn-link { color: #a8a8a8; }
 
 .bn-status {
   display: flex;

@@ -8,7 +8,7 @@ import { MenuIniciar } from "./MenuIniciar";
 import { IconeBloco, IconeLixeira } from "./icones";
 import { useMedia } from "../util";
 import { definirSinal, emitir, ouvir } from "./eventos";
-import { guiaDispensado, Tour, type PassoTour } from "./Guia";
+import { Tour, type PassoTour } from "./Guia";
 
 const BARRA = 48;
 
@@ -51,7 +51,7 @@ export function Desktop({ ativo, onDesligar }: Props) {
     datagrip: geometria("datagrip"),
     spotify: geometria("spotify"),
     navegador: geometria("navegador"), // aberto e minimizado na barra, como os outros
-    bloco: { ...geometria("bloco"), aberta: false },
+    bloco: geometria("bloco"), // o bilhete (LEIA-ME.txt) também: minimizado, não pula na frente
   }));
   const zTopo = useRef(10);
   const [menu, setMenu] = useState<null | { busca: boolean }>(null);
@@ -108,21 +108,18 @@ export function Desktop({ ativo, onDesligar }: Props) {
   }, []);
 
   // ---------------- Guia ----------------
-  // Ao entrar no computador: boas-vindas (a não ser que o endereço já peça algo,
-  // ou que a pessoa tenha marcado "não mostrar")
+  // Com #tour no endereço, o tour começa assim que o computador aparece.
+  // O bilhete (LEIA-ME.txt) não abre sozinho: fica minimizado na barra.
   const jaRecebeu = useRef(false);
   useEffect(() => {
     definirSinal("desktop-ativo", ativo);
     if (!ativo || jaRecebeu.current) return;
     // A decisão fica dentro do timer: assim o modo estrito do React (que roda o efeito
-    // duas vezes em desenvolvimento) não cancela as boas-vindas
+    // duas vezes em desenvolvimento) não cancela o tour
     const t = window.setTimeout(() => {
       if (jaRecebeu.current) return;
       jaRecebeu.current = true;
-      const h = pedidoNoEndereco.current;
-      if (h === "tour") setTour(true);
-      // o bilhete (LEIA-ME.txt) abre sozinho, a não ser que o endereço já peça algo
-      else if (!/^(intellij|site|datagrip|spotify|navegador|portfolio|abrir=)/.test(h) && !guiaDispensado()) abrir("bloco");
+      if (pedidoNoEndereco.current === "tour") setTour(true);
     }, 650);
     return () => window.clearTimeout(t);
   }, [ativo]);

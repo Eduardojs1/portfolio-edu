@@ -752,12 +752,17 @@ export function criarCena(
   const parallax = { x: 0, y: 0, ax: 0, ay: 0 };
 
   function montarCaminho() {
+    const L = THREE.MathUtils.lerp;
     const aspecto = camera.aspect;
     const t = THREE.MathUtils.clamp((1.6 - aspecto) / 1.0, 0, 1); // 0 = paisagem, 1 = retrato
-    camera.fov = THREE.MathUtils.lerp(38, 50, t);
+    // Celular em pé: a câmera sobe e olha mais de cima, e o campo de visão abre até caber
+    // da caneca ao cachorro (35° na horizontal). De tela quadrada para cima, nada muda.
+    const e = THREE.MathUtils.clamp((1.0 - aspecto) / 0.4, 0, 1);
+    const fovEmPe = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(35 / 2)) / aspecto));
+    camera.fov = L(L(38, 50, t), fovEmPe, e);
     camera.updateProjectionMatrix();
-    const inicio = new THREE.Vector3(0, THREE.MathUtils.lerp(1.36, 1.5, t), THREE.MathUtils.lerp(1.15, 2.05, t));
-    const alvoInicio = new THREE.Vector3(0, THREE.MathUtils.lerp(0.98, 0.96, t), THREE.MathUtils.lerp(-0.06, -0.02, t));
+    const inicio = new THREE.Vector3(L(0, 0.06, e), L(L(1.36, 1.5, t), 2.25, e), L(L(1.15, 2.05, t), 1.8, e));
+    const alvoInicio = new THREE.Vector3(L(0, 0.06, e), L(L(0.98, 0.96, t), 0.92, e), L(L(-0.06, -0.02, t), 0, e));
     const meio = centroTela.clone().addScaledVector(normalTela, 0.72).add(new THREE.Vector3(0, 0.05, 0));
     const tan = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
     const dFim = (Math.min(TELA_H / 2, TELA_W / 2 / aspecto) / tan) * 0.965;

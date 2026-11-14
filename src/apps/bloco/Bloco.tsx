@@ -1,8 +1,6 @@
-import { useState } from "react";
 import type { ControleJanela } from "../../sistema/contexto";
 import { useSistema } from "../../sistema/contexto";
 import { emitir } from "../../sistema/eventos";
-import { dispensarGuia, guiaDispensado } from "../../sistema/Guia";
 import { links, perfil } from "../../dados/perfil";
 import { useT } from "../../i18n";
 import { IcFechar, IcFecharJanela, IcMaximizarJanela, IcMinimizarJanela, IcRestaurarJanela } from "../intellij/icones";
@@ -12,7 +10,6 @@ import { IcFechar, IcFecharJanela, IcMaximizarJanela, IcMinimizarJanela, IcResta
 export function Bloco({ janela }: { janela: ControleJanela }) {
   const { abrir, celular } = useSistema();
   const t = useT();
-  const [naoAbrir, setNaoAbrir] = useState(guiaDispensado());
   const arquivo = t("LEIA-ME.txt", "README.txt");
 
   const acao = (texto: string, fazer: () => void) => (
@@ -92,14 +89,6 @@ export function Bloco({ janela }: { janela: ControleJanela }) {
             <br />— edu
             <span className="bn-cursor" aria-hidden="true" />
           </p>
-          <p className="bn-rodape-texto">
-            (esse bilhete abre sozinho quando alguém entra.{" "}
-            {acao(naoAbrir ? "voltar a abrir sozinho" : "não abrir mais sozinho", () => {
-              dispensarGuia(!naoAbrir);
-              setNaoAbrir(!naoAbrir);
-            })}
-            )
-          </p>
         </div>
       ) : (
         <div className="bn-texto">
@@ -129,14 +118,6 @@ export function Bloco({ janela }: { janela: ControleJanela }) {
             thanks for stopping by!
             <br />— edu
             <span className="bn-cursor" aria-hidden="true" />
-          </p>
-          <p className="bn-rodape-texto">
-            (this note opens by itself when someone arrives.{" "}
-            {acao(naoAbrir ? "open it automatically again" : "don't open it automatically", () => {
-              dispensarGuia(!naoAbrir);
-              setNaoAbrir(!naoAbrir);
-            })}
-            )
           </p>
         </div>
       )}

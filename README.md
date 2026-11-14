@@ -6,7 +6,7 @@ De novembro até o Dia de Reis, a mesa fica decorada para o Natal (arvorezinha, 
 
 Tudo tem **português e inglês**: o botão PT | EN fica no canto da intro e no topo do site, e o indicador POR/ENG da barra de tarefas também troca. Na primeira visita, segue o idioma do navegador.
 
-**Para quem não é da área** (recrutador, cliente): ao entrar, abre um `LEIA-ME.txt` no Bloco de notas, um bilhete meu explicando o que fazer: abrir o portfólio num navegador comum, fazer o tour (post-its escritos à mão, com marca-texto em volta de cada coisa) ou só fuçar. O atalho **LEIA-ME** fica sempre no canto da barra de tarefas.
+**Para quem não é da área** (recrutador, cliente): na barra de tarefas fica um `LEIA-ME.txt` minimizado no Bloco de notas (ele não pula na frente sozinho), um bilhete meu explicando o que fazer: abrir o portfólio num navegador comum, fazer o tour (post-its escritos à mão, com marca-texto em volta de cada coisa) ou só fuçar. O atalho **LEIA-ME** fica sempre no canto da barra de tarefas.
 
 Os programas abertos:
 

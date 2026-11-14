@@ -4,25 +4,6 @@ import { lerSinal, ouvirSinal } from "./eventos";
 // O tour: post-its escritos à mão, um círculo de marca-texto em volta do que importa
 // e uma setinha desenhada. O bilhete de boas-vindas é o LEIA-ME.txt (apps/bloco).
 
-const CHAVE = "portfolio-guia-dispensado";
-
-export function guiaDispensado() {
-  try {
-    return localStorage.getItem(CHAVE) === "1";
-  } catch {
-    return false;
-  }
-}
-
-export function dispensarGuia(sim: boolean) {
-  try {
-    if (sim) localStorage.setItem(CHAVE, "1");
-    else localStorage.removeItem(CHAVE);
-  } catch {
-    /* sem armazenamento: o bilhete só volta a abrir sozinho */
-  }
-}
-
 export type PassoTour = {
   alvo?: string; // seletor CSS do que circular
   texto: string;
