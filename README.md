@@ -36,7 +36,7 @@ Os dados ficam em `src/dados/`. O código Java do IntelliJ, as tabelas do DataGr
 | --- | --- |
 | `perfil.ts` | **nome, e-mail, LinkedIn, carreira (experiência) e formação**, as frases do início e o currículo. Os campos terminados em `En` são a versão em inglês. |
 | `sobre.ts` | o texto e a lista "O que eu faço". |
-| `projetos.ts` | os projetos: rótulo, resumo e a lista de destaques do card (em PT e EN). |
+| `projetos.ts` | os projetos: o texto, o que eu fiz e as tecnologias do "Feito em:" (em PT e EN). |
 | `stack.ts` | as tecnologias por área (com o nome de cada área em PT e EN). |
 | `tarcisio.ts` | as faixas da playlist do Spotify que a barra de baixo controla. |
 | `musicas.ts` | as músicas do Spotify (nome, artista, andamento e acordes) e as playlists do Spotify de verdade (`playlistsSpotify`: é só colar o link de compartilhar). |

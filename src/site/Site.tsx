@@ -150,9 +150,7 @@ export function Site({ irPara, avisar }: Props) {
                 <button className="s-proj-topo" onClick={() => alternarProjeto(p.id)} aria-expanded={aberto} aria-controls={`projeto-${p.id}-mais`}>
                   <span className="s-proj-num">{String(i + 1).padStart(2, "0")}</span>
                   <span className="s-proj-titulo">
-                    <span className="s-proj-tipo">{d.rotulo}</span>
                     <span className="s-proj-nome">{p.nome}</span>
-                    <span className="s-proj-destaques">{d.destaques.join(" · ")}</span>
                   </span>
                   <span className="s-proj-mais" aria-hidden="true">
                     <svg viewBox="0 0 16 16" width="16" height="16">
@@ -170,12 +168,7 @@ export function Site({ irPara, avisar }: Props) {
                         <p className="s-proj-texto">{d.fiz}</p>
                       </div>
                       <div>
-                        <h4 className="s-proj-sub">{t("Por dentro", "Inside")}</h4>
-                        <ul className="s-proj-lista">
-                          {d.detalhes.map((x) => (
-                            <li key={x}>{x}</li>
-                          ))}
-                        </ul>
+                        <h4 className="s-proj-sub">{t("Feito em:", "Built with:")}</h4>
                         <ul className="s-chips s-chips-mini">
                           {p.stack.map((tec) => (
                             <li key={tec} className="s-chip">

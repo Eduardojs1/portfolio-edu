@@ -679,7 +679,7 @@ To get to know me, pick one below:
 
 ## Projects
 
-${projetos.map((p) => `- **${p.nome}** · ${p.en.rotulo}. ${p.en.resumo} [See on the website](site:projeto-${p.id})`).join("\n")}
+${projetos.map((p) => `- **${p.nome}**. ${p.en.resumo} [See on the website](site:projeto-${p.id})`).join("\n")}
 
 ## Stack
 
@@ -722,7 +722,7 @@ Para me conhecer, escolha abaixo:
 
 ## Projetos
 
-${projetos.map((p) => `- **${p.nome}** · ${p.rotulo}. ${p.resumo} [Ver no site](site:projeto-${p.id})`).join("\n")}
+${projetos.map((p) => `- **${p.nome}**. ${p.resumo} [Ver no site](site:projeto-${p.id})`).join("\n")}
 
 ## Stack
 

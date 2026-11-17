@@ -140,9 +140,8 @@
   text-align: left;
   cursor: pointer;
 }
-.s-proj-num { align-self: start; padding-top: 4px; font-family: var(--f-mono); font-size: 13px; color: #6f737a; }
+.s-proj-num { font-family: var(--f-mono); font-size: 13px; color: #6f737a; }
 .s-proj-titulo { display: grid; gap: 4px; min-width: 0; }
-.s-proj-tipo { font-size: 13px; color: #8b8f97; }
 .s-proj-nome {
   font-family: var(--f-display);
   font-weight: 800;
@@ -152,7 +151,6 @@
   color: #eef0f3;
   transition: color 0.2s;
 }
-.s-proj-destaques { font-size: 14.5px; color: #a8adb6; }
 .s-proj-mais {
   display: grid;
   place-items: center;
@@ -186,10 +184,8 @@
 .s-proj-sobre { font-size: 15px; line-height: 1.7; color: #dfe1e5; }
 .s-proj-sub { margin: 20px 0 8px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em; color: #8b8f97; }
 .s-proj-detalhe > div > .s-proj-sub:first-child { margin-top: 0; }
+.s-proj-sub + .s-chips-mini { margin-top: 0; }
 .s-proj-texto { font-size: 14.5px; line-height: 1.65; color: #c9ccd3; }
-.s-proj-lista { display: grid; gap: 8px; margin-bottom: 18px; }
-.s-proj-lista li { position: relative; padding-left: 18px; font-size: 14.5px; line-height: 1.55; color: #c9ccd3; }
-.s-proj-lista li::before { content: "–"; position: absolute; left: 0; color: #6f737a; }
 @container (max-width: 700px) {
   .s-proj-topo { grid-template-columns: minmax(0, 1fr) 42px; padding: 22px 0; }
   .s-proj-num { display: none; }
