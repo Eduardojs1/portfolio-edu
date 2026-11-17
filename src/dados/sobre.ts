@@ -1,7 +1,17 @@
 import { perfil } from "./perfil";
 
-export const textoSobre = `Sou o ${perfil.nome}, desenvolvedor full stack de Belém (PA). Trabalho com Java e Spring no back-end e React, Next e Vue no front, e também mantenho sistemas corporativos em Java EE com Oracle.`;
-export const textoSobreEn = `I'm ${perfil.nome}, a full stack developer from Belém, Brazil. I work with Java and Spring on the back end and React, Next and Vue on the front end, and I also maintain enterprise systems in Java EE with Oracle.`;
+// Parágrafos separados por linha em branco (no site, cada um vira um <p>)
+export const textoSobre = `Sou o ${perfil.nome}, desenvolvedor full stack de Belém (PA). Desde maio de 2025 estou na WPE4BANK, num sistema de microcrédito urbano e rural feito em Java EE, com JSF e Oracle. Antes, fiz um ano e meio de estágio em desenvolvimento web na Acception Tecnologia.
+
+Fora do trabalho, pego projeto de todo tipo. Para lojas de mods de GTA V, fiz um bot de Discord que vende no Pix, um instalador para Windows em Electron, uma área de membros em Spring Boot com Next e os sites com 3D. Também fiz um sistema de gestão de clínicas com Spring Boot e Vue.
+
+No back-end, Java com Spring (e Node com TypeScript nos bots). No front, React, Next ou Vue. No banco, PostgreSQL ou Oracle.`;
+
+export const textoSobreEn = `I'm ${perfil.nome}, a full stack developer from Belém, Brazil. Since May 2025 I've been at WPE4BANK, working on an urban and rural microcredit system built with Java EE, JSF and Oracle. Before that, I spent a year and a half as a web development intern at Acception Tecnologia.
+
+Outside work, I take on all kinds of projects. For GTA V mod stores I built a Discord bot that sells through Pix, a Windows installer in Electron, a members area in Spring Boot with Next and the 3D websites. I also built a clinic management system with Spring Boot and Vue.
+
+On the back end, Java with Spring (and Node with TypeScript for the bots). On the front end, React, Next or Vue. For databases, PostgreSQL or Oracle.`;
 
 export const frentes: [string, string][] = [
   ["Sites e landing pages", "com 3D e animação quando o produto pede impacto"],

@@ -129,7 +129,11 @@ export function Site({ irPara, avisar }: Props) {
 
       <section className="s-secao" id="sobre">
         <h2 className="s-titulo">{t("Sobre mim", "About me")}</h2>
-        <p className="s-texto s-texto-grande">{en ? textoSobreEn : textoSobre}</p>
+        {(en ? textoSobreEn : textoSobre).split("\n\n").map((paragrafo) => (
+          <p key={paragrafo.slice(0, 24)} className="s-texto s-texto-grande">
+            {paragrafo}
+          </p>
+        ))}
       </section>
 
       <section className="s-secao" id="projetos">

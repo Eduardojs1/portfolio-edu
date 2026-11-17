@@ -60,8 +60,11 @@ export const ID = {
 const q = (s: string) => `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 const sqlTexto = (s: string) => `'${s.replace(/'/g, "''")}'`;
 const recuo = (n: number) => " ".repeat(n);
-const textoBloco = (texto: string, n: number) =>
-  [`${recuo(n)}"""`, ...quebrar(texto, 64).map((l) => recuo(n) + l), `${recuo(n)}"""`].join("\n");
+// Texto em bloco do Java ("""), mantendo a linha em branco entre os parágrafos
+const textoBloco = (texto: string, n: number) => {
+  const linhas = texto.split("\n\n").flatMap((p, i) => [...(i ? [""] : []), ...quebrar(p, 64).map((l) => recuo(n) + l)]);
+  return [`${recuo(n)}"""`, ...linhas, `${recuo(n)}"""`].join("\n");
+};
 
 // ---------------------------------------------------------------------------
 // Arquivos

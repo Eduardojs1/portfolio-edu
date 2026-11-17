@@ -38,6 +38,7 @@
 .s-carreira .s-subtitulo { margin-top: 0; }
 .s-texto { max-width: 62ch; color: #c9ccd3; }
 .s-texto-grande { max-width: 58ch; font-size: clamp(16px, 1.9cqi, 19px); line-height: 1.7; color: #d6d8de; }
+.s-texto-grande + .s-texto-grande { margin-top: 0.9em; }
 
 .s-heroi,
 .s-secao { max-width: 1320px; margin: 0 auto; padding-left: clamp(18px, 5cqi, 64px); padding-right: clamp(18px, 5cqi, 64px); }
